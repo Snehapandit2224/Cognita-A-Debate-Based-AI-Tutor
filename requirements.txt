@@ -1,0 +1,41 @@
+# ================================
+# Core Backend (MCP-style Server)
+# ================================
+fastapi
+uvicorn
+
+# ================================
+# LLM + Agent Orchestration
+# ================================
+openai
+langchain
+langchain-community
+
+# ================================
+# Embeddings + Vector Database (RAG)
+# ================================
+faiss-cpu
+sentence-transformers
+
+# ================================
+# Data Processing
+# ================================
+numpy
+pandas
+tqdm
+
+# ================================
+# HTTP & API Handling
+# ================================
+requests
+python-dotenv
+
+# ================================
+# Evaluation & Experiment Tracking
+# ================================
+scikit-learn
+
+# ================================
+# Logging & Utilities
+# ================================
+loguru

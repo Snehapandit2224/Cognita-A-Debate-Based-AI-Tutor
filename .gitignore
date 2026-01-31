@@ -1,0 +1,8 @@
+cat <<EOF > .gitignore
+venv/
+__pycache__/
+.env
+logs/
+keys.txt
+*.pyc
+EOF

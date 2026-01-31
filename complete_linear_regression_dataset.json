@@ -1,0 +1,434 @@
+[
+  {
+    "id": "lr_001",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "To make our housing example more interesting, let's consider a slightly richer dataset in which we also know the number of bedrooms in each house: Living area (feet²) #bedrooms Price (1000$s): 2104 3 400, 1600 3 330, 2400 3 369, 1416 2 232, 3000 4 540. Here, the x's are two-dimensional vectors in R². For instance, x₁⁽ⁱ⁾ is the living area of the i-th house in the training set, and x₂⁽ⁱ⁾ is its number of bedrooms."
+  },
+  {
+    "id": "lr_002",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In general, when designing a learning problem, it will be up to you to decide what features to choose, so if you are out in Portland gathering housing data, you might also decide to include other features such as whether each house has a fireplace, the number of bathrooms, and so on. We'll say more about feature selection later, but for now let's take the features as given."
+  },
+  {
+    "id": "lr_003",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To perform supervised learning, we must decide how we're going to represent functions/hypotheses h in a computer. As an initial choice, let's say we decide to approximate y as a linear function of x: hθ(x) = θ₀ + θ₁x₁ + θ₂x₂. Here, the θᵢ's are the parameters (also called weights) parameterizing the space of linear functions mapping from X to Y."
+  },
+  {
+    "id": "lr_004",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "When there is no risk of confusion, we will drop the θ subscript in hθ(x), and write it more simply as h(x). To simplify our notation, we also introduce the convention of letting x₀ = 1 (this is the intercept term), so that h(x) = Σᵢ₌₀ᵈ θᵢxᵢ = θᵀx, where on the right-hand side above we are viewing θ and x both as vectors, and here d is the number of input variables (not counting x₀)."
+  },
+  {
+    "id": "lr_005",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, given a training set, how do we pick, or learn, the parameters θ? One reasonable method seems to be to make h(x) close to y, at least for the training examples we have. To formalize this, we will define a function that measures, for each value of the θ's, how close the h(x⁽ⁱ⁾)'s are to the corresponding y⁽ⁱ⁾'s."
+  },
+  {
+    "id": "lr_006",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We define the cost function: J(θ) = ½ Σᵢ₌₁ⁿ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)². If you've seen linear regression before, you may recognize this as the familiar least-squares cost function that gives rise to the ordinary least squares regression model. Whether or not you have seen it previously, let's keep going, and we'll eventually show this to be a special case of a much broader family of algorithms."
+  },
+  {
+    "id": "lr_007",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We want to choose θ so as to minimize J(θ). To do so, let's use a search algorithm that starts with some 'initial guess' for θ, and that repeatedly changes θ to make J(θ) smaller, until hopefully we converge to a value of θ that minimizes J(θ). Specifically, let's consider the gradient descent algorithm, which starts with some initial θ, and repeatedly performs the update."
+  },
+  {
+    "id": "lr_008",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The gradient descent update is: θⱼ := θⱼ − α ∂/∂θⱼ J(θ). (This update is simultaneously performed for all values of j = 0, . . . , d.) Here, α is called the learning rate. This is a very natural algorithm that repeatedly takes a step in the direction of steepest decrease of J."
+  },
+  {
+    "id": "lr_009",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "In order to implement this algorithm, we have to work out what is the partial derivative term on the right hand side. Let's first work it out for the case of if we have only one training example (x, y), so that we can neglect the sum in the definition of J. We have: ∂/∂θⱼ J(θ) = ∂/∂θⱼ ½(hθ(x) − y)² = 2·½(hθ(x) − y)· ∂/∂θⱼ(hθ(x) − y) = (hθ(x) − y)· ∂/∂θⱼ(Σᵢ₌₀ᵈ θᵢxᵢ − y) = (hθ(x) − y)xⱼ"
+  },
+  {
+    "id": "lr_010",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For a single training example, this gives the update rule: θⱼ := θⱼ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾. The rule is called the LMS update rule (LMS stands for 'least mean squares'), and is also known as the Widrow-Hoff learning rule."
+  },
+  {
+    "id": "lr_011",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "This rule has several properties that seem natural and intuitive. For instance, the magnitude of the update is proportional to the error term (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾)); thus, for instance, if we are encountering a training example on which our prediction nearly matches the actual value of y⁽ⁱ⁾, then we find that there is little need to change the parameters; in contrast, a larger change to the parameters will be made if our prediction hθ(x⁽ⁱ⁾) has a large error (i.e., if it is very far from y⁽ⁱ⁾)."
+  },
+  {
+    "id": "lr_012",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We'd derived the LMS rule for when there was only a single training example. There are two ways to modify this method for a training set of more than one example. The first is replace it with the following algorithm: Repeat until convergence { θⱼ := θⱼ + α Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾, (for every j) }. We use the notation 'a := b' to denote an operation (in a computer program) in which we set the value of a variable a to be equal to the value of b. In other words, this operation overwrites a with the value of b. In contrast, we will write 'a = b' when we are asserting a statement of fact, that the value of a is equal to the value of b."
+  },
+  {
+    "id": "lr_013",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "By grouping the updates of the coordinates into an update of the vector θ, we can rewrite update in a slightly more succinct way: θ := θ + α Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))x⁽ⁱ⁾. The reader can easily verify that the quantity in the summation in the update rule above is just ∂J(θ)/∂θⱼ (for the original definition of J). So, this is simply gradient descent on the original cost function J."
+  },
+  {
+    "id": "lr_014",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "This method looks at every example in the entire training set on every step, and is called batch gradient descent. Note that, while gradient descent can be susceptible to local minima in general, the optimization problem we have posed here for linear regression has only one global, and no other local, optima; thus gradient descent always converges (assuming the learning rate α is not too large) to the global minimum. Indeed, J is a convex quadratic function."
+  },
+  {
+    "id": "lr_015",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here is an example of gradient descent as it is run to minimize a quadratic function. The ellipses shown above are the contours of a quadratic function. Also shown is the trajectory taken by gradient descent, which was initialized at (48,30). The x's in the figure (joined by straight lines) mark the successive values of θ that gradient descent went through."
+  },
+  {
+    "id": "lr_016",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "When we run batch gradient descent to fit θ on our previous dataset, to learn to predict housing price as a function of living area, we obtain θ₀ = 71.27, θ₁ = 0.1345. If we plot hθ(x) as a function of x (area), along with the training data, we obtain the following figure. If the number of bedrooms were included as one of the input features as well, we get θ₀ = 89.60, θ₁ = 0.1392, θ₂ = −8.738."
+  },
+  {
+    "id": "lr_017",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The above results were obtained with batch gradient descent. There is an alternative to batch gradient descent that also works very well. Consider the following algorithm: Loop { for i = 1 to n, { θⱼ := θⱼ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾, (for every j) } }. By grouping the updates of the coordinates into an update of the vector θ, we can rewrite update in a slightly more succinct way: θ := θ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))x⁽ⁱ⁾"
+  },
+  {
+    "id": "lr_018",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In this algorithm, we repeatedly run through the training set, and each time we encounter a training example, we update the parameters according to the gradient of the error with respect to that single training example only. This algorithm is called stochastic gradient descent (also incremental gradient descent). Whereas batch gradient descent has to scan through the entire training set before taking a single step—a costly operation if n is large—stochastic gradient descent can start making progress right away, and continues to make progress with each example it looks at."
+  },
+  {
+    "id": "lr_019",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Often, stochastic gradient descent gets θ 'close' to the minimum much faster than batch gradient descent. (Note however that it may never 'converge' to the minimum, and the parameters θ will keep oscillating around the minimum of J(θ); but in practice most of the values near the minimum will be reasonably good approximations to the true minimum.) For these reasons, particularly when the training set is large, stochastic gradient descent is often preferred over batch gradient descent. By slowly letting the learning rate α decrease to zero as the algorithm runs, it is also possible to ensure that the parameters will converge to the global minimum rather than merely oscillate around the minimum."
+  },
+  {
+    "id": "lr_020",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Gradient descent gives one way of minimizing J. Let's discuss a second way of doing so, this time performing the minimization explicitly and without resorting to an iterative algorithm. In this method, we will minimize J by explicitly taking its derivatives with respect to the θⱼ's, and setting them to zero. To enable us to do this without having to write reams of algebra and pages full of matrices of derivatives, let's introduce some notation for doing calculus with matrices."
+  },
+  {
+    "id": "lr_021",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For a function f : Rⁿˣᵈ → R mapping from n-by-d matrices to the real numbers, we define the derivative of f with respect to A to be: ∇ₐf(A) = [∂f/∂A₁₁ ... ∂f/∂A₁ᵈ; ...; ∂f/∂Aₙ₁ ... ∂f/∂Aₙᵈ]. Thus, the gradient ∇ₐf(A) is itself an n-by-d matrix, whose (i,j)-element is ∂f/∂Aᵢⱼ. Here, Aᵢⱼ denotes the (i, j) entry of the matrix A."
+  },
+  {
+    "id": "lr_022",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "For example, suppose A = [A₁₁ A₁₂; A₂₁ A₂₂] is a 2-by-2 matrix, and the function f : R²ˣ² → R is given by f(A) = 3/2 A₁₁ + 5A₁₂² + A₂₁A₂₂. We then have ∇ₐf(A) = [3/2  10A₁₂; A₂₂  A₂₁]."
+  },
+  {
+    "id": "lr_023",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Armed with the tools of matrix derivatives, let us now proceed to find in closed-form the value of θ that minimizes J(θ). We begin by re-writing J in matrix-vectorial notation. Given a training set, define the design matrix X to be the n-by-d matrix (actually n-by-d + 1, if we include the intercept term) that contains the training examples' input values in its rows."
+  },
+  {
+    "id": "lr_024",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The design matrix X is defined as: X = [—(x⁽¹⁾)ᵀ—; —(x⁽²⁾)ᵀ—; ...; —(x⁽ⁿ⁾)ᵀ—]. Also, let ~y be the n-dimensional vector containing all the target values from the training set: ~y = [y⁽¹⁾; y⁽²⁾; ...; y⁽ⁿ⁾]."
+  },
+  {
+    "id": "lr_025",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, since hθ(x⁽ⁱ⁾) = (x⁽ⁱ⁾)ᵀθ, we can easily verify that Xθ − ~y = [(x⁽¹⁾)ᵀθ; ...; (x⁽ⁿ⁾)ᵀθ] − [y⁽¹⁾; ...; y⁽ⁿ⁾] = [hθ(x⁽¹⁾) − y⁽¹⁾; ...; hθ(x⁽ⁿ⁾) − y⁽ⁿ⁾]. Thus, using the fact that for a vector z, we have that zᵀz = Σᵢ zᵢ²: ½(Xθ − ~y)ᵀ(Xθ − ~y) = ½ Σᵢ₌₁ⁿ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)² = J(θ)"
+  },
+  {
+    "id": "lr_026",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Finally, to minimize J, let's find its derivatives with respect to θ. Hence: ∇θJ(θ) = ∇θ ½(Xθ − ~y)ᵀ(Xθ − ~y) = ½∇θ(θᵀXᵀXθ − θᵀXᵀ~y − ~yᵀXθ + ~yᵀ~y) = ½∇θ(θᵀ(XᵀX)θ − ~yᵀ(Xθ) − ~yᵀ(Xθ)) = ½∇θ(θᵀ(XᵀX)θ − 2(Xᵀ~y)ᵀθ) = ½(2XᵀXθ − 2Xᵀ~y) = XᵀXθ − Xᵀ~y. In the third step, we used the fact that aᵀb = bᵀa, and in the fifth step used the facts ∇ₓbᵀx = b and ∇ₓxᵀAx = 2Ax for symmetric matrix A."
+  },
+  {
+    "id": "lr_027",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To minimize J, we set its derivatives to zero, and obtain the normal equations: XᵀXθ = Xᵀ~y. Thus, the value of θ that minimizes J(θ) is given in closed form by the equation θ = (XᵀX)⁻¹Xᵀ~y. Note that in the above step, we are implicitly assuming that XᵀX is an invertible matrix. This can be checked before calculating the inverse. If either the number of linearly independent examples is fewer than the number of features, or if the features are not linearly independent, then XᵀX will not be invertible."
+  },
+  {
+    "id": "lr_028",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "When faced with a regression problem, why might linear regression, and specifically why might the least-squares cost function J, be a reasonable choice? In this section, we will give a set of probabilistic assumptions, under which least-squares regression is derived as a very natural algorithm. Let us assume that the target variables and the inputs are related via the equation: y⁽ⁱ⁾ = θᵀx⁽ⁱ⁾ + ε⁽ⁱ⁾, where ε⁽ⁱ⁾ is an error term that captures either unmodeled effects (such as if there are some features very pertinent to predicting housing price, but that we'd left out of the regression), or random noise."
+  },
+  {
+    "id": "lr_029",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let us further assume that the ε⁽ⁱ⁾ are distributed IID (independently and identically distributed) according to a Gaussian distribution (also called a Normal distribution) with mean zero and some variance σ². We can write this assumption as ε⁽ⁱ⁾ ~ N(0, σ²). The density of ε⁽ⁱ⁾ is then given by: p(ε⁽ⁱ⁾) = 1/(√(2π)σ) exp(−(ε⁽ⁱ⁾)²/(2σ²))."
+  },
+  {
+    "id": "lr_030",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "This implies that: p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) = 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)). The notation p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) indicates that this is the distribution of y⁽ⁱ⁾ given x⁽ⁱ⁾ and parameterized by θ. Note that we should not condition on θ (θ is not a random variable), but it is simply a parameter of the distribution. We can also write the distribution of y⁽ⁱ⁾ as y⁽ⁱ⁾|x⁽ⁱ⁾; θ ~ N(θᵀx⁽ⁱ⁾, σ²)."
+  },
+  {
+    "id": "lr_031",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Given X (the design matrix, which contains all the x⁽ⁱ⁾'s) and θ, what is the distribution of the y⁽ⁱ⁾'s? The probability of the data is given by p(~y|X; θ). This quantity is typically viewed as a function of ~y (and perhaps X), for a fixed value of θ. When we wish to explicitly view this as a function of θ, we will instead call it the likelihood function: L(θ) = L(θ; X, ~y) = p(~y|X; θ)."
+  },
+  {
+    "id": "lr_032",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note that by the independence assumption on the ε⁽ⁱ⁾'s (and hence also the y⁽ⁱ⁾'s given the x⁽ⁱ⁾'s), this can also be written: L(θ) = ∏ᵢ₌₁ⁿ p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) = ∏ᵢ₌₁ⁿ 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²))."
+  },
+  {
+    "id": "lr_033",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, given this probabilistic model relating the y⁽ⁱ⁾'s and the x⁽ⁱ⁾'s, what is a reasonable way of choosing our best guess of the parameters θ? The principal of maximum likelihood says that we should choose θ so as to make the data as high probability as possible. I.e., we should choose θ to maximize L(θ)."
+  },
+  {
+    "id": "lr_034",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Instead of maximizing L(θ), we can also maximize any strictly increasing function of L(θ). In particular, the derivations will be a bit simpler if we instead maximize the log likelihood ℓ(θ): ℓ(θ) = log L(θ) = log ∏ᵢ₌₁ⁿ 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)) = Σᵢ₌₁ⁿ log 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)) = n log 1/(√(2π)σ) − 1/σ² · ½ Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²"
+  },
+  {
+    "id": "lr_035",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Hence, maximizing ℓ(θ) gives the same answer as minimizing ½ Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)², which we recognize to be J(θ), our original least-squares cost function. To summarize: Under the previous probabilistic assumptions on the data, least-squares regression corresponds to finding the maximum likelihood estimate of θ. This is thus one set of assumptions under which least-squares regression can be justified as a very natural method that's just doing maximum likelihood estimation."
+  },
+  {
+    "id": "lr_036",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note however that the probabilistic assumptions are by no means necessary for least-squares to be a perfectly good and rational procedure, and there may—and indeed there are—other natural assumptions that can also be used to justify it. Note also that, in our previous discussion, our final choice of θ did not depend on what was σ², and indeed we'd have arrived at the same result even if σ² were unknown. We will use this fact again later, when we talk about the exponential family and generalized linear models."
+  },
+  {
+    "id": "lr_037",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Consider the problem of predicting y from x ∈ R. The leftmost figure below shows the result of fitting a y = θ₀ + θ₁x to a dataset. We see that the data doesn't really lie on straight line, and so the fit is not very good."
+  },
+  {
+    "id": "lr_038",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Instead, if we had added an extra feature x², and fit y = θ₀ + θ₁x + θ₂x², then we obtain a slightly better fit to the data. (See middle figure) Naively, it might seem that the more features we add, the better. However, there is also a danger in adding too many features."
+  },
+  {
+    "id": "lr_039",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "The rightmost figure is the result of fitting a 5-th order polynomial y = Σⱼ₌₀⁵ θⱼxʲ. We see that even though the fitted curve passes through the data perfectly, we would not expect this to be a very good predictor of, say, housing prices (y) for different living areas (x)."
+  },
+  {
+    "id": "lr_040",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Without formally defining what these terms mean, we'll say the figure on the left shows an instance of underfitting—in which the data clearly shows structure not captured by the model."
+  },
+  {
+    "id": "lr_041",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The figure on the right is an example of overfitting. (Later in this class, when we talk about learning theory we'll formalize some of these notions, and also define more carefully just what it means for a hypothesis to be good or bad.)"
+  },
+  {
+    "id": "lr_042",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "As discussed previously, and as shown in the example above, the choice of features is important to ensuring good performance of a learning algorithm. (When we talk about model selection, we'll also see algorithms for automatically choosing a good set of features.) In this section, let us briefly talk about the locally weighted linear regression (LWR) algorithm which, assuming there is sufficient training data, makes the choice of features less critical. This treatment will be brief, since you'll get a chance to explore some of the properties of the LWR algorithm yourself in the homework."
+  },
+  {
+    "id": "lr_043",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the original linear regression algorithm, to make a prediction at a query point x (i.e., to evaluate h(x)), we would: 1. Fit θ to minimize Σᵢ(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)². 2. Output θᵀx. In contrast, the locally weighted linear regression algorithm does the following: 1. Fit θ to minimize Σᵢ w⁽ⁱ⁾(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)². 2. Output θᵀx."
+  },
+  {
+    "id": "lr_044",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here, the w⁽ⁱ⁾'s are non-negative valued weights. Intuitively, if w⁽ⁱ⁾ is large for a particular value of i, then in picking θ, we'll try hard to make (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)² small. If w⁽ⁱ⁾ is small, then the (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)² error term will be pretty much ignored in the fit."
+  },
+  {
+    "id": "lr_045",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "A fairly standard choice for the weights is: w⁽ⁱ⁾ = exp(−(x⁽ⁱ⁾ − x)²/(2τ²)). Note that the weights depend on the particular point x at which we're trying to evaluate x. Moreover, if |x⁽ⁱ⁾ − x| is small, then w⁽ⁱ⁾ is close to 1; and if |x⁽ⁱ⁾ − x| is large, then w⁽ⁱ⁾ is small. Hence, θ is chosen giving a much higher 'weight' to the (errors on) training examples close to the query point x."
+  },
+  {
+    "id": "lr_046",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note also that while the formula for the weights takes a form that is cosmetically similar to the density of a Gaussian distribution, the w⁽ⁱ⁾'s do not directly have anything to do with Gaussians, and in particular the w⁽ⁱ⁾ are not random variables, normally distributed or otherwise. The parameter τ controls how quickly the weight of a training example falls off with distance of its x⁽ⁱ⁾ from the query point x; τ is called the bandwidth parameter, and is also something that you'll get to experiment with in your homework."
+  },
+  {
+    "id": "lr_047",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Locally weighted linear regression is the first example we're seeing of a non-parametric algorithm. The (unweighted) linear regression algorithm that we saw earlier is known as a parametric learning algorithm, because it has a fixed, finite number of parameters (the θᵢ's), which are fit to the data. Once we've fit the θᵢ's and stored them away, we no longer need to keep the training data around to make future predictions."
+  },
+  {
+    "id": "lr_048",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In contrast, to make predictions using locally weighted linear regression, we need to keep the entire training set around. The term 'non-parametric' (roughly) refers to the fact that the amount of stuff we need to keep in order to represent the hypothesis h grows linearly with the size of the training set."
+  }
+]

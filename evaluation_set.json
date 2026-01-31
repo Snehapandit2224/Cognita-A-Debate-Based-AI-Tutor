@@ -1,0 +1,182 @@
+[
+  {
+    "id": "E01",
+    "question": "What does the hypothesis function represent in linear regression?",
+    "concept": "Hypothesis",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand how input features are mapped to output predictions.",
+    "common_misconception": "The hypothesis stores training examples.",
+    "evaluation_focus": ["concept clarity", "correctness"]
+  },
+  {
+    "id": "E02",
+    "question": "Why do we include an intercept term (x₀ = 1) in linear regression?",
+    "concept": "Hypothesis",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand the role of the bias term in shifting predictions.",
+    "common_misconception": "The intercept is only for mathematical convenience.",
+    "evaluation_focus": ["concept clarity"]
+  },
+  {
+    "id": "E03",
+    "question": "What is the purpose of the cost function in linear regression?",
+    "concept": "Cost Function",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand how prediction error is measured.",
+    "common_misconception": "Lower cost always guarantees better generalization.",
+    "evaluation_focus": ["concept understanding"]
+  },
+  {
+    "id": "E04",
+    "question": "Why is mean squared error commonly used as the cost function?",
+    "concept": "Cost Function",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand optimization smoothness and error penalization.",
+    "common_misconception": "It is chosen arbitrarily.",
+    "evaluation_focus": ["theoretical reasoning"]
+  },
+  {
+    "id": "E05",
+    "question": "How does gradient descent update parameters during training?",
+    "concept": "Gradient Descent",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand iterative optimization using gradients.",
+    "common_misconception": "Gradient descent directly jumps to the optimal solution.",
+    "evaluation_focus": ["process understanding"]
+  },
+  {
+    "id": "E06",
+    "question": "What is the role of the learning rate in gradient descent?",
+    "concept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand convergence speed vs stability trade-offs.",
+    "common_misconception": "Higher learning rate always improves training speed.",
+    "evaluation_focus": ["optimization reasoning"]
+  },
+  {
+    "id": "E07",
+    "question": "Why does batch gradient descent always converge to a global minimum for linear regression?",
+    "concept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand convexity of the cost function.",
+    "common_misconception": "Gradient descent always avoids local minima in all models.",
+    "evaluation_focus": ["theoretical correctness"]
+  },
+  {
+    "id": "E08",
+    "question": "How does stochastic gradient descent differ from batch gradient descent?",
+    "concept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand computational efficiency and convergence behavior.",
+    "common_misconception": "Stochastic gradient descent is always more accurate.",
+    "evaluation_focus": ["comparative understanding"]
+  },
+  {
+    "id": "E09",
+    "question": "What problem does the normal equation solve in linear regression?",
+    "concept": "Normal Equation",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand closed-form parameter computation.",
+    "common_misconception": "Normal equation is always faster than gradient descent.",
+    "evaluation_focus": ["concept understanding"]
+  },
+  {
+    "id": "E10",
+    "question": "Why must XᵀX be invertible when using the normal equation?",
+    "concept": "Normal Equation",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand feature independence and matrix invertibility.",
+    "common_misconception": "Matrix inversion is always possible.",
+    "evaluation_focus": ["mathematical reasoning"]
+  },
+  {
+    "id": "E11",
+    "question": "What is overfitting in linear regression?",
+    "concept": "Overfitting",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand memorization versus generalization.",
+    "common_misconception": "Perfect training accuracy guarantees good performance.",
+    "evaluation_focus": ["concept clarity"]
+  },
+  {
+    "id": "E12",
+    "question": "What is underfitting and how does it affect predictions?",
+    "concept": "Underfitting",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand insufficient model complexity.",
+    "common_misconception": "Simpler models always generalize better.",
+    "evaluation_focus": ["concept understanding"]
+  },
+  {
+    "id": "E13",
+    "question": "Why can adding more features increase the risk of overfitting?",
+    "concept": "General",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand model complexity vs data size trade-off.",
+    "common_misconception": "More features always improve performance.",
+    "evaluation_focus": ["conceptual reasoning"]
+  },
+  {
+    "id": "E14",
+    "question": "Why is least squares equivalent to maximum likelihood estimation under Gaussian noise?",
+    "concept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand probabilistic interpretation of regression.",
+    "common_misconception": "Least squares and MLE are unrelated.",
+    "evaluation_focus": ["theoretical understanding"]
+  },
+  {
+    "id": "E15",
+    "question": "What noise assumptions are made in linear regression optimization?",
+    "concept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand IID Gaussian noise assumption.",
+    "common_misconception": "Noise distribution does not affect optimization.",
+    "evaluation_focus": ["statistical reasoning"]
+  },
+  {
+    "id": "E16",
+    "question": "What is locally weighted linear regression and how does it differ from standard linear regression?",
+    "concept": "General",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand parametric vs non-parametric learning.",
+    "common_misconception": "Both methods store the same information.",
+    "evaluation_focus": ["algorithmic understanding"]
+  },
+  {
+    "id": "E17",
+    "question": "Why is feature selection important in linear regression models?",
+    "concept": "General",
+    "difficulty": "beginner",
+    "expected_learning_outcome": "Understand relevance and redundancy of features.",
+    "common_misconception": "All available features should always be used.",
+    "evaluation_focus": ["practical reasoning"]
+  },
+  {
+    "id": "E18",
+    "question": "What happens if the learning rate is too large during training?",
+    "concept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand divergence and instability issues.",
+    "common_misconception": "Large learning rate always improves convergence speed.",
+    "evaluation_focus": ["optimization behavior"]
+  },
+  {
+    "id": "E19",
+    "question": "Why does stochastic gradient descent sometimes oscillate around the minimum?",
+    "concept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand noisy gradient updates.",
+    "common_misconception": "Oscillation means the algorithm failed.",
+    "evaluation_focus": ["optimization understanding"]
+  },
+  {
+    "id": "E20",
+    "question": "Why is gradient descent preferred over the normal equation for large datasets?",
+    "concept": "Optimization",
+    "difficulty": "intermediate",
+    "expected_learning_outcome": "Understand scalability and computational efficiency.",
+    "common_misconception": "Closed-form solutions are always faster.",
+    "evaluation_focus": ["practical comparison"]
+  }
+]
