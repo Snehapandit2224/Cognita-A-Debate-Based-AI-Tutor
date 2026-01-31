@@ -1,0 +1,1365 @@
+[
+  {
+    "id": "lr_001",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "To make our housing example more interesting, let's consider a slightly richer dataset in which we also know the number of bedrooms in each house: Living area (feet²) #bedrooms Price (1000$s): 2104 3 400, 1600 3 330, 2400 3 369, 1416 2 232, 3000 4 540. Here, the x's are two-dimensional vectors in R². For instance, x₁⁽ⁱ⁾ is the living area of the i-th house in the training set, and x₂⁽ⁱ⁾ is its number of bedrooms."
+  },
+  {
+    "id": "lr_002",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In general, when designing a learning problem, it will be up to you to decide what features to choose, so if you are out in Portland gathering housing data, you might also decide to include other features such as whether each house has a fireplace, the number of bathrooms, and so on. We'll say more about feature selection later, but for now let's take the features as given."
+  },
+  {
+    "id": "lr_003",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To perform supervised learning, we must decide how we're going to represent functions/hypotheses h in a computer. As an initial choice, let's say we decide to approximate y as a linear function of x: hθ(x) = θ₀ + θ₁x₁ + θ₂x₂. Here, the θᵢ's are the parameters (also called weights) parameterizing the space of linear functions mapping from X to Y."
+  },
+  {
+    "id": "lr_004",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "When there is no risk of confusion, we will drop the θ subscript in hθ(x), and write it more simply as h(x). To simplify our notation, we also introduce the convention of letting x₀ = 1 (this is the intercept term), so that h(x) = Σᵢ₌₀ᵈ θᵢxᵢ = θᵀx, where on the right-hand side above we are viewing θ and x both as vectors, and here d is the number of input variables (not counting x₀)."
+  },
+  {
+    "id": "lr_005",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, given a training set, how do we pick, or learn, the parameters θ? One reasonable method seems to be to make h(x) close to y, at least for the training examples we have. To formalize this, we will define a function that measures, for each value of the θ's, how close the h(x⁽ⁱ⁾)'s are to the corresponding y⁽ⁱ⁾'s."
+  },
+  {
+    "id": "lr_006",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We define the cost function: J(θ) = ½ Σᵢ₌₁ⁿ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)². If you've seen linear regression before, you may recognize this as the familiar least-squares cost function that gives rise to the ordinary least squares regression model. Whether or not you have seen it previously, let's keep going, and we'll eventually show this to be a special case of a much broader family of algorithms."
+  },
+  {
+    "id": "lr_007",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We want to choose θ so as to minimize J(θ). To do so, let's use a search algorithm that starts with some 'initial guess' for θ, and that repeatedly changes θ to make J(θ) smaller, until hopefully we converge to a value of θ that minimizes J(θ). Specifically, let's consider the gradient descent algorithm, which starts with some initial θ, and repeatedly performs the update."
+  },
+  {
+    "id": "lr_008",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The gradient descent update is: θⱼ := θⱼ − α ∂/∂θⱼ J(θ). (This update is simultaneously performed for all values of j = 0, . . . , d.) Here, α is called the learning rate. This is a very natural algorithm that repeatedly takes a step in the direction of steepest decrease of J."
+  },
+  {
+    "id": "lr_009",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "In order to implement this algorithm, we have to work out what is the partial derivative term on the right hand side. Let's first work it out for the case of if we have only one training example (x, y), so that we can neglect the sum in the definition of J. We have: ∂/∂θⱼ J(θ) = ∂/∂θⱼ ½(hθ(x) − y)² = 2·½(hθ(x) − y)· ∂/∂θⱼ(hθ(x) − y) = (hθ(x) − y)· ∂/∂θⱼ(Σᵢ₌₀ᵈ θᵢxᵢ − y) = (hθ(x) − y)xⱼ"
+  },
+  {
+    "id": "lr_010",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For a single training example, this gives the update rule: θⱼ := θⱼ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾. The rule is called the LMS update rule (LMS stands for 'least mean squares'), and is also known as the Widrow-Hoff learning rule."
+  },
+  {
+    "id": "lr_011",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "This rule has several properties that seem natural and intuitive. For instance, the magnitude of the update is proportional to the error term (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾)); thus, for instance, if we are encountering a training example on which our prediction nearly matches the actual value of y⁽ⁱ⁾, then we find that there is little need to change the parameters; in contrast, a larger change to the parameters will be made if our prediction hθ(x⁽ⁱ⁾) has a large error (i.e., if it is very far from y⁽ⁱ⁾)."
+  },
+  {
+    "id": "lr_012",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We'd derived the LMS rule for when there was only a single training example. There are two ways to modify this method for a training set of more than one example. The first is replace it with the following algorithm: Repeat until convergence { θⱼ := θⱼ + α Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾, (for every j) }. We use the notation 'a := b' to denote an operation (in a computer program) in which we set the value of a variable a to be equal to the value of b. In other words, this operation overwrites a with the value of b. In contrast, we will write 'a = b' when we are asserting a statement of fact, that the value of a is equal to the value of b."
+  },
+  {
+    "id": "lr_013",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "By grouping the updates of the coordinates into an update of the vector θ, we can rewrite update in a slightly more succinct way: θ := θ + α Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))x⁽ⁱ⁾. The reader can easily verify that the quantity in the summation in the update rule above is just ∂J(θ)/∂θⱼ (for the original definition of J). So, this is simply gradient descent on the original cost function J."
+  },
+  {
+    "id": "lr_014",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "This method looks at every example in the entire training set on every step, and is called batch gradient descent. Note that, while gradient descent can be susceptible to local minima in general, the optimization problem we have posed here for linear regression has only one global, and no other local, optima; thus gradient descent always converges (assuming the learning rate α is not too large) to the global minimum. Indeed, J is a convex quadratic function."
+  },
+  {
+    "id": "lr_015",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here is an example of gradient descent as it is run to minimize a quadratic function. The ellipses shown above are the contours of a quadratic function. Also shown is the trajectory taken by gradient descent, which was initialized at (48,30). The x's in the figure (joined by straight lines) mark the successive values of θ that gradient descent went through."
+  },
+  {
+    "id": "lr_016",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "When we run batch gradient descent to fit θ on our previous dataset, to learn to predict housing price as a function of living area, we obtain θ₀ = 71.27, θ₁ = 0.1345. If we plot hθ(x) as a function of x (area), along with the training data, we obtain the following figure. If the number of bedrooms were included as one of the input features as well, we get θ₀ = 89.60, θ₁ = 0.1392, θ₂ = −8.738."
+  },
+  {
+    "id": "lr_017",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The above results were obtained with batch gradient descent. There is an alternative to batch gradient descent that also works very well. Consider the following algorithm: Loop { for i = 1 to n, { θⱼ := θⱼ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾, (for every j) } }. By grouping the updates of the coordinates into an update of the vector θ, we can rewrite update in a slightly more succinct way: θ := θ + α(y⁽ⁱ⁾ − hθ(x⁽ⁱ⁾))x⁽ⁱ⁾"
+  },
+  {
+    "id": "lr_018",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In this algorithm, we repeatedly run through the training set, and each time we encounter a training example, we update the parameters according to the gradient of the error with respect to that single training example only. This algorithm is called stochastic gradient descent (also incremental gradient descent). Whereas batch gradient descent has to scan through the entire training set before taking a single step—a costly operation if n is large—stochastic gradient descent can start making progress right away, and continues to make progress with each example it looks at."
+  },
+  {
+    "id": "lr_019",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Often, stochastic gradient descent gets θ 'close' to the minimum much faster than batch gradient descent. (Note however that it may never 'converge' to the minimum, and the parameters θ will keep oscillating around the minimum of J(θ); but in practice most of the values near the minimum will be reasonably good approximations to the true minimum.) For these reasons, particularly when the training set is large, stochastic gradient descent is often preferred over batch gradient descent. By slowly letting the learning rate α decrease to zero as the algorithm runs, it is also possible to ensure that the parameters will converge to the global minimum rather than merely oscillate around the minimum."
+  },
+  {
+    "id": "lr_020",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Gradient descent gives one way of minimizing J. Let's discuss a second way of doing so, this time performing the minimization explicitly and without resorting to an iterative algorithm. In this method, we will minimize J by explicitly taking its derivatives with respect to the θⱼ's, and setting them to zero. To enable us to do this without having to write reams of algebra and pages full of matrices of derivatives, let's introduce some notation for doing calculus with matrices."
+  },
+  {
+    "id": "lr_021",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For a function f : Rⁿˣᵈ → R mapping from n-by-d matrices to the real numbers, we define the derivative of f with respect to A to be: ∇ₐf(A) = [∂f/∂A₁₁ ... ∂f/∂A₁ᵈ; ...; ∂f/∂Aₙ₁ ... ∂f/∂Aₙᵈ]. Thus, the gradient ∇ₐf(A) is itself an n-by-d matrix, whose (i,j)-element is ∂f/∂Aᵢⱼ. Here, Aᵢⱼ denotes the (i, j) entry of the matrix A."
+  },
+  {
+    "id": "lr_022",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "For example, suppose A = [A₁₁ A₁₂; A₂₁ A₂₂] is a 2-by-2 matrix, and the function f : R²ˣ² → R is given by f(A) = 3/2 A₁₁ + 5A₁₂² + A₂₁A₂₂. We then have ∇ₐf(A) = [3/2  10A₁₂; A₂₂  A₂₁]."
+  },
+  {
+    "id": "lr_023",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Armed with the tools of matrix derivatives, let us now proceed to find in closed-form the value of θ that minimizes J(θ). We begin by re-writing J in matrix-vectorial notation. Given a training set, define the design matrix X to be the n-by-d matrix (actually n-by-d + 1, if we include the intercept term) that contains the training examples' input values in its rows."
+  },
+  {
+    "id": "lr_024",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The design matrix X is defined as: X = [—(x⁽¹⁾)ᵀ—; —(x⁽²⁾)ᵀ—; ...; —(x⁽ⁿ⁾)ᵀ—]. Also, let ~y be the n-dimensional vector containing all the target values from the training set: ~y = [y⁽¹⁾; y⁽²⁾; ...; y⁽ⁿ⁾]."
+  },
+  {
+    "id": "lr_025",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, since hθ(x⁽ⁱ⁾) = (x⁽ⁱ⁾)ᵀθ, we can easily verify that Xθ − ~y = [(x⁽¹⁾)ᵀθ; ...; (x⁽ⁿ⁾)ᵀθ] − [y⁽¹⁾; ...; y⁽ⁿ⁾] = [hθ(x⁽¹⁾) − y⁽¹⁾; ...; hθ(x⁽ⁿ⁾) − y⁽ⁿ⁾]. Thus, using the fact that for a vector z, we have that zᵀz = Σᵢ zᵢ²: ½(Xθ − ~y)ᵀ(Xθ − ~y) = ½ Σᵢ₌₁ⁿ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)² = J(θ)"
+  },
+  {
+    "id": "lr_026",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Finally, to minimize J, let's find its derivatives with respect to θ. Hence: ∇θJ(θ) = ∇θ ½(Xθ − ~y)ᵀ(Xθ − ~y) = ½∇θ(θᵀXᵀXθ − θᵀXᵀ~y − ~yᵀXθ + ~yᵀ~y) = ½∇θ(θᵀ(XᵀX)θ − ~yᵀ(Xθ) − ~yᵀ(Xθ)) = ½∇θ(θᵀ(XᵀX)θ − 2(Xᵀ~y)ᵀθ) = ½(2XᵀXθ − 2Xᵀ~y) = XᵀXθ − Xᵀ~y. In the third step, we used the fact that aᵀb = bᵀa, and in the fifth step used the facts ∇ₓbᵀx = b and ∇ₓxᵀAx = 2Ax for symmetric matrix A."
+  },
+  {
+    "id": "lr_027",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To minimize J, we set its derivatives to zero, and obtain the normal equations: XᵀXθ = Xᵀ~y. Thus, the value of θ that minimizes J(θ) is given in closed form by the equation θ = (XᵀX)⁻¹Xᵀ~y. Note that in the above step, we are implicitly assuming that XᵀX is an invertible matrix. This can be checked before calculating the inverse. If either the number of linearly independent examples is fewer than the number of features, or if the features are not linearly independent, then XᵀX will not be invertible."
+  },
+  {
+    "id": "lr_028",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "When faced with a regression problem, why might linear regression, and specifically why might the least-squares cost function J, be a reasonable choice? In this section, we will give a set of probabilistic assumptions, under which least-squares regression is derived as a very natural algorithm. Let us assume that the target variables and the inputs are related via the equation: y⁽ⁱ⁾ = θᵀx⁽ⁱ⁾ + ε⁽ⁱ⁾, where ε⁽ⁱ⁾ is an error term that captures either unmodeled effects (such as if there are some features very pertinent to predicting housing price, but that we'd left out of the regression), or random noise."
+  },
+  {
+    "id": "lr_029",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let us further assume that the ε⁽ⁱ⁾ are distributed IID (independently and identically distributed) according to a Gaussian distribution (also called a Normal distribution) with mean zero and some variance σ². We can write this assumption as ε⁽ⁱ⁾ ~ N(0, σ²). The density of ε⁽ⁱ⁾ is then given by: p(ε⁽ⁱ⁾) = 1/(√(2π)σ) exp(−(ε⁽ⁱ⁾)²/(2σ²))."
+  },
+  {
+    "id": "lr_030",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "This implies that: p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) = 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)). The notation p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) indicates that this is the distribution of y⁽ⁱ⁾ given x⁽ⁱ⁾ and parameterized by θ. Note that we should not condition on θ (θ is not a random variable), but it is simply a parameter of the distribution. We can also write the distribution of y⁽ⁱ⁾ as y⁽ⁱ⁾|x⁽ⁱ⁾; θ ~ N(θᵀx⁽ⁱ⁾, σ²)."
+  },
+  {
+    "id": "lr_031",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Given X (the design matrix, which contains all the x⁽ⁱ⁾'s) and θ, what is the distribution of the y⁽ⁱ⁾'s? The probability of the data is given by p(~y|X; θ). This quantity is typically viewed as a function of ~y (and perhaps X), for a fixed value of θ. When we wish to explicitly view this as a function of θ, we will instead call it the likelihood function: L(θ) = L(θ; X, ~y) = p(~y|X; θ)."
+  },
+  {
+    "id": "lr_032",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note that by the independence assumption on the ε⁽ⁱ⁾'s (and hence also the y⁽ⁱ⁾'s given the x⁽ⁱ⁾'s), this can also be written: L(θ) = ∏ᵢ₌₁ⁿ p(y⁽ⁱ⁾|x⁽ⁱ⁾; θ) = ∏ᵢ₌₁ⁿ 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²))."
+  },
+  {
+    "id": "lr_033",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Now, given this probabilistic model relating the y⁽ⁱ⁾'s and the x⁽ⁱ⁾'s, what is a reasonable way of choosing our best guess of the parameters θ? The principal of maximum likelihood says that we should choose θ so as to make the data as high probability as possible. I.e., we should choose θ to maximize L(θ)."
+  },
+  {
+    "id": "lr_034",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Instead of maximizing L(θ), we can also maximize any strictly increasing function of L(θ). In particular, the derivations will be a bit simpler if we instead maximize the log likelihood ℓ(θ): ℓ(θ) = log L(θ) = log ∏ᵢ₌₁ⁿ 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)) = Σᵢ₌₁ⁿ log 1/(√(2π)σ) exp(−(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²/(2σ²)) = n log 1/(√(2π)σ) − 1/σ² · ½ Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)²"
+  },
+  {
+    "id": "lr_035",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Hence, maximizing ℓ(θ) gives the same answer as minimizing ½ Σᵢ₌₁ⁿ (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)², which we recognize to be J(θ), our original least-squares cost function. To summarize: Under the previous probabilistic assumptions on the data, least-squares regression corresponds to finding the maximum likelihood estimate of θ. This is thus one set of assumptions under which least-squares regression can be justified as a very natural method that's just doing maximum likelihood estimation."
+  },
+  {
+    "id": "lr_036",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note however that the probabilistic assumptions are by no means necessary for least-squares to be a perfectly good and rational procedure, and there may—and indeed there are—other natural assumptions that can also be used to justify it. Note also that, in our previous discussion, our final choice of θ did not depend on what was σ², and indeed we'd have arrived at the same result even if σ² were unknown. We will use this fact again later, when we talk about the exponential family and generalized linear models."
+  },
+  {
+    "id": "lr_037",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Consider the problem of predicting y from x ∈ R. The leftmost figure below shows the result of fitting a y = θ₀ + θ₁x to a dataset. We see that the data doesn't really lie on straight line, and so the fit is not very good."
+  },
+  {
+    "id": "lr_038",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Instead, if we had added an extra feature x², and fit y = θ₀ + θ₁x + θ₂x², then we obtain a slightly better fit to the data. (See middle figure) Naively, it might seem that the more features we add, the better. However, there is also a danger in adding too many features."
+  },
+  {
+    "id": "lr_039",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "The rightmost figure is the result of fitting a 5-th order polynomial y = Σⱼ₌₀⁵ θⱼxʲ. We see that even though the fitted curve passes through the data perfectly, we would not expect this to be a very good predictor of, say, housing prices (y) for different living areas (x)."
+  },
+  {
+    "id": "lr_040",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Without formally defining what these terms mean, we'll say the figure on the left shows an instance of underfitting—in which the data clearly shows structure not captured by the model."
+  },
+  {
+    "id": "lr_041",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The figure on the right is an example of overfitting. (Later in this class, when we talk about learning theory we'll formalize some of these notions, and also define more carefully just what it means for a hypothesis to be good or bad.)"
+  },
+  {
+    "id": "lr_042",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "As discussed previously, and as shown in the example above, the choice of features is important to ensuring good performance of a learning algorithm. (When we talk about model selection, we'll also see algorithms for automatically choosing a good set of features.) In this section, let us briefly talk about the locally weighted linear regression (LWR) algorithm which, assuming there is sufficient training data, makes the choice of features less critical. This treatment will be brief, since you'll get a chance to explore some of the properties of the LWR algorithm yourself in the homework."
+  },
+  {
+    "id": "lr_043",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the original linear regression algorithm, to make a prediction at a query point x (i.e., to evaluate h(x)), we would: 1. Fit θ to minimize Σᵢ(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)². 2. Output θᵀx. In contrast, the locally weighted linear regression algorithm does the following: 1. Fit θ to minimize Σᵢ w⁽ⁱ⁾(y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)². 2. Output θᵀx."
+  },
+  {
+    "id": "lr_044",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here, the w⁽ⁱ⁾'s are non-negative valued weights. Intuitively, if w⁽ⁱ⁾ is large for a particular value of i, then in picking θ, we'll try hard to make (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)² small. If w⁽ⁱ⁾ is small, then the (y⁽ⁱ⁾ − θᵀx⁽ⁱ⁾)² error term will be pretty much ignored in the fit."
+  },
+  {
+    "id": "lr_045",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "A fairly standard choice for the weights is: w⁽ⁱ⁾ = exp(−(x⁽ⁱ⁾ − x)²/(2τ²)). Note that the weights depend on the particular point x at which we're trying to evaluate x. Moreover, if |x⁽ⁱ⁾ − x| is small, then w⁽ⁱ⁾ is close to 1; and if |x⁽ⁱ⁾ − x| is large, then w⁽ⁱ⁾ is small. Hence, θ is chosen giving a much higher 'weight' to the (errors on) training examples close to the query point x."
+  },
+  {
+    "id": "lr_046",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note also that while the formula for the weights takes a form that is cosmetically similar to the density of a Gaussian distribution, the w⁽ⁱ⁾'s do not directly have anything to do with Gaussians, and in particular the w⁽ⁱ⁾ are not random variables, normally distributed or otherwise. The parameter τ controls how quickly the weight of a training example falls off with distance of its x⁽ⁱ⁾ from the query point x; τ is called the bandwidth parameter, and is also something that you'll get to experiment with in your homework."
+  },
+  {
+    "id": "lr_047",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Locally weighted linear regression is the first example we're seeing of a non-parametric algorithm. The (unweighted) linear regression algorithm that we saw earlier is known as a parametric learning algorithm, because it has a fixed, finite number of parameters (the θᵢ's), which are fit to the data. Once we've fit the θᵢ's and stored them away, we no longer need to keep the training data around to make future predictions."
+  },
+  {
+    "id": "lr_048",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In contrast, to make predictions using locally weighted linear regression, we need to keep the entire training set around. The term 'non-parametric' (roughly) refers to the fact that the amount of stuff we need to keep in order to represent the hypothesis h grows linearly with the size of the training set."
+  },
+  
+  {
+    "id": "lor_001",
+    "concept": "Logistic Regression",
+    "subconcept": "Binary Classification",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let's now talk about the classification problem. This is just like the regression problem, except that the values y we now want to predict take on only a small number of discrete values. For now, we will focus on the binary classification problem in which y can take on only two values, 0 and 1. (Most of what we say here will also generalize to the multiple-class case.) For instance, if we are trying to build a spam classifier for email, then x(i) may be some features of a piece of email, and y may be 1 if it is a piece of spam mail, and 0 otherwise. 0 is also called the negative class, and 1 the positive class, and they are sometimes also denoted by the symbols \"-\" and \"+.\" Given x(i), the corresponding y(i) is also called the label for the training example."
+  },
+  {
+    "id": "lor_002",
+    "concept": "Logistic Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We could approach the classification problem ignoring the fact that y is discrete-valued, and use our old linear regression algorithm to try to predict y given x. However, it is easy to construct examples where this method performs very poorly. Intuitively, it also doesn't make sense for hθ(x) to take values larger than 1 or smaller than 0 when we know that y ∈ {0,1}."
+  },
+  {
+    "id": "lor_003",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "beginner",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To fix this, let's change the form for our hypotheses hθ(x). We will choose hθ(x) = g(θᵀx) = 1/(1 + e^(-θᵀx)), where g(z) = 1/(1 + e^(-z)) is called the logistic function or the sigmoid function."
+  },
+  {
+    "id": "lor_004",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Notice that g(z) tends towards 1 as z → ∞, and g(z) tends towards 0 as z → -∞. Moreover, g(z), and hence also h(x), is always bounded between 0 and 1. As before, we are keeping the convention of letting x₀ = 1, so that θᵀx = θ₀ + Σⱼ₌₁ᵈ θⱼxⱼ."
+  },
+  {
+    "id": "lor_005",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For now, let's take the choice of g as given. Other functions that smoothly increase from 0 to 1 can also be used, but for a couple of reasons that we'll see later (when we talk about GLMs, and when we talk about generative learning algorithms), the choice of the logistic function is a fairly natural one. Before moving on, here's a useful property of the derivative of the sigmoid function, which we write as g': g'(z) = d/dz[1/(1 + e^(-z))] = e^(-z)/(1 + e^(-z))² = [1/(1 + e^(-z))] · [1 - 1/(1 + e^(-z))] = g(z)(1 - g(z))."
+  },
+  {
+    "id": "lor_006",
+    "concept": "Logistic Regression",
+    "subconcept": "Maximum Likelihood",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "So, given the logistic regression model, how do we fit θ for it? Following how we saw least squares regression could be derived as the maximum likelihood estimator under a set of assumptions, let's endow our classification model with a set of probabilistic assumptions, and then fit the parameters via maximum likelihood."
+  },
+  {
+    "id": "lor_007",
+    "concept": "Logistic Regression",
+    "subconcept": "Maximum Likelihood",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let us assume that P(y = 1 | x; θ) = hθ(x) and P(y = 0 | x; θ) = 1 - hθ(x). Note that this can be written more compactly as p(y | x; θ) = (hθ(x))^y (1 - hθ(x))^(1-y)."
+  },
+  {
+    "id": "lor_008",
+    "concept": "Logistic Regression",
+    "subconcept": "Maximum Likelihood",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Assuming that the n training examples were generated independently, we can then write down the likelihood of the parameters as L(θ) = p(y | X; θ) = ∏ᵢ₌₁ⁿ p(y(i) | x(i); θ) = ∏ᵢ₌₁ⁿ (hθ(x(i)))^y(i) (1 - hθ(x(i)))^(1-y(i))."
+  },
+  {
+    "id": "lor_009",
+    "concept": "Logistic Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "As before, it will be easier to maximize the log likelihood: ℓ(θ) = log L(θ) = Σᵢ₌₁ⁿ [y(i) log h(x(i)) + (1 - y(i)) log(1 - h(x(i)))]."
+  },
+  {
+    "id": "lor_010",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "How do we maximize the likelihood? Similar to our derivation in the case of linear regression, we can use gradient ascent. Written in vectorial notation, our updates will therefore be given by θ := θ + α∇θℓ(θ). (Note the positive rather than negative sign in the update formula, since we're maximizing, rather than minimizing, a function now.) Let's start by working with just one training example (x, y), and take derivatives to derive the stochastic gradient ascent rule."
+  },
+  {
+    "id": "lor_011",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "∂/∂θⱼ ℓ(θ) = y[1/g(θᵀx)] - (1-y)[1/(1-g(θᵀx))] · ∂/∂θⱼ g(θᵀx) = y[1/g(θᵀx)] - (1-y)[1/(1-g(θᵀx))] · g(θᵀx)(1-g(θᵀx)) · ∂/∂θⱼ θᵀx = [y(1-g(θᵀx)) - (1-y)g(θᵀx)] xⱼ = (y - hθ(x))xⱼ. Above, we used the fact that g'(z) = g(z)(1 - g(z))."
+  },
+  {
+    "id": "lor_012",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "This therefore gives us the stochastic gradient ascent rule: θⱼ := θⱼ + α(y(i) - hθ(x(i)))xⱼ(i). If we compare this to the LMS update rule, we see that it looks identical; but this is not the same algorithm, because hθ(x(i)) is now defined as a non-linear function of θᵀx(i). Nonetheless, it's a little surprising that we end up with the same update rule for a rather different algorithm and learning problem. Is this coincidence, or is there a deeper reason behind this? We'll answer this when we get to GLM models."
+  },
+  {
+    "id": "lor_013",
+    "concept": "Logistic Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "An alternative notational viewpoint of the same loss function is also useful, especially for Section 7.1 where we study nonlinear models. Let logistic : ℝ × {0,1} → ℝ≥0 be the logistic loss defined as logistic(t, y) ≐ y log(1 + exp(-t)) + (1 - y)log(1 + exp(t)). One can verify by plugging in hθ(x) = 1/(1 + e^(-θᵀx)) that the negative log likelihood (the negation of ℓ(θ) in equation (2.1)) can be re-written as -ℓ(θ) = logistic(θᵀx, y). Oftentimes θᵀx or t is called the logit."
+  },
+  {
+    "id": "lor_014",
+    "concept": "Logistic Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Basic calculus gives us that ∂logistic(t, y)/∂t = y[-exp(-t)/(1 + exp(-t))] + (1-y)[1/(1 + exp(-t))] = 1/(1 + exp(-t)) - y. Then, using the chain rule, we have that ∂/∂θⱼ ℓ(θ) = -∂logistic(t,y)/∂t · ∂t/∂θⱼ = (y - 1/(1 + exp(-t))) · xⱼ = (y - hθ(x))xⱼ, which is consistent with the derivation in equation (2.2). We will see this viewpoint can be extended nonlinear models in Section 7.1."
+  },
+  {
+    "id": "lor_015",
+    "concept": "Logistic Regression",
+    "subconcept": "Perceptron",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We now digress to talk briefly about an algorithm that's of some historical interest, and that we will also return to later when we talk about learning theory. Consider modifying the logistic regression method to \"force\" it to output values that are either 0 or 1 or exactly. To do so, it seems natural to change the definition of g to be the threshold function: g(z) = 1 if z ≥ 0, 0 if z < 0."
+  },
+  {
+    "id": "lor_016",
+    "concept": "Logistic Regression",
+    "subconcept": "Perceptron",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "If we then let hθ(x) = g(θᵀx) as before but using this modified definition of g, and if we use the update rule θⱼ := θⱼ + α(y(i) - hθ(x(i)))xⱼ(i), then we have the perceptron learning algorithm."
+  },
+  {
+    "id": "lor_017",
+    "concept": "Logistic Regression",
+    "subconcept": "Perceptron",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the 1960s, this \"perceptron\" was argued to be a rough model for how individual neurons in the brain work. Given how simple the algorithm is, it will also provide a starting point for our analysis when we talk about learning theory later in this class. Note however that even though the perceptron may be cosmetically similar to the other algorithms we talked about, it is actually a very different type of algorithm than logistic regression and least squares linear regression; in particular, it is difficult to endow the perceptron's predictions with meaningful probabilistic interpretations, or derive the perceptron as a maximum likelihood estimation algorithm."
+  },
+  {
+    "id": "lor_018",
+    "concept": "Logistic Regression",
+    "subconcept": "Multi-class Classification",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Consider a classification problem in which the response variable y can take on any one of k values, so y ∈ {1, 2, ..., k}. For example, rather than classifying emails into the two classes spam or not-spam—which would have been a binary classification problem—we might want to classify them into three classes, such as spam, personal mails, and work-related mails. The label / response variable is still discrete, but can now take on more than two values. We will thus model it as distributed according to a multinomial distribution."
+  },
+  {
+    "id": "lor_019",
+    "concept": "Logistic Regression",
+    "subconcept": "Multi-class Classification",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In this case, p(y | x; θ) is a distribution over k possible discrete outcomes and is thus a multinomial distribution. Recall that a multinomial distribution involves k numbers φ₁, ..., φₖ specifying the probability of each of the outcomes. Note that these numbers must satisfy Σᵢ₌₁ᵏ φᵢ = 1. We will design a parameterized model that outputs φ₁, ..., φₖ satisfying this constraint given the input x."
+  },
+  {
+    "id": "lor_020",
+    "concept": "Logistic Regression",
+    "subconcept": "Multi-class Classification",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We introduce k groups of parameters θ₁, ..., θₖ, each of them being a vector in ℝᵈ. Intuitively, we would like to use θ₁ᵀx, ..., θₖᵀx to represent φ₁, ..., φₖ, the probabilities P(y=1 | x; θ), ..., P(y=k | x; θ). However, there are two issues with such a direct approach. First, θⱼᵀx is not necessarily within [0,1]. Second, the summation of θⱼᵀx's is not necessarily 1. Thus, instead, we will use the softmax function to turn (θ₁ᵀx, ···, θₖᵀx) into a probability vector with nonnegative entries that sum up to 1."
+  },
+  {
+    "id": "lor_021",
+    "concept": "Logistic Regression",
+    "subconcept": "Softmax Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Define the softmax function softmax: ℝᵏ → ℝᵏ as softmax(t₁, ..., tₖ) = [exp(t₁)/Σⱼ₌₁ᵏ exp(tⱼ), ..., exp(tₖ)/Σⱼ₌₁ᵏ exp(tⱼ)]ᵀ. The inputs to the softmax function, the vector there, are often called logits. Note that by definition, the output of the softmax function is always a probability vector whose entries are nonnegative and sum up to 1."
+  },
+  {
+    "id": "lor_022",
+    "concept": "Logistic Regression",
+    "subconcept": "Softmax Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let (t₁, ..., tₖ) = (θ₁ᵀx, ···, θₖᵀx). We apply the softmax function to (t₁, ..., tₖ), and use the output as the probabilities P(y=1|x; θ), ..., P(y=k|x; θ). We obtain the following probabilistic model: [P(y=1|x; θ), ..., P(y=k|x; θ)]ᵀ = softmax(t₁, ···, tₖ) = [exp(θ₁ᵀx)/Σⱼ₌₁ᵏ exp(θⱼᵀx), ..., exp(θₖᵀx)/Σⱼ₌₁ᵏ exp(θⱼᵀx)]ᵀ."
+  },
+  {
+    "id": "lor_023",
+    "concept": "Logistic Regression",
+    "subconcept": "Softmax Function",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For notational convenience, we will let φᵢ = exp(tᵢ)/Σⱼ₌₁ᵏ exp(tⱼ). More succinctly, the equation above can be written as: P(y=i|x; θ) = φᵢ = exp(tᵢ)/Σⱼ₌₁ᵏ exp(tⱼ) = exp(θᵢᵀx)/Σⱼ₌₁ᵏ exp(θⱼᵀx)."
+  },
+  {
+    "id": "lor_024",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Next, we compute the negative log-likelihood of a single example (x, y). -log p(y|x, θ) = -log[exp(tᵧ)/Σⱼ₌₁ᵏ exp(tⱼ)] = -log[exp(θᵧᵀx)/Σⱼ₌₁ᵏ exp(θⱼᵀx)]. Thus, the loss function, the negative log-likelihood of the training data, is given as ℓ(θ) = Σᵢ₌₁ⁿ -log[exp(θᵧ₍ᵢ₎ᵀx(i))/Σⱼ₌₁ᵏ exp(θⱼᵀx(i))]."
+  },
+  {
+    "id": "lor_025",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "It's convenient to define the cross-entropy loss ce : ℝᵏ × {1,...,k} → ℝ≥0, which modularizes in the complex equation above: ce((t₁, . . . , tₖ), y) = -log[exp(tᵧ)/Σⱼ₌₁ᵏ exp(tⱼ)]. With this notation, we can simply rewrite equation (2.13) as ℓ(θ) = Σᵢ₌₁ⁿ ce((θ₁ᵀx(i), . . . , θₖᵀx(i)), y(i))."
+  },
+  {
+    "id": "lor_026",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Moreover, conveniently, the cross-entropy loss also has a simple gradient. Let t = (t₁, ..., tₖ), and recall φᵢ = exp(tᵢ)/Σⱼ₌₁ᵏ exp(tⱼ). By basic calculus, we can derive ∂ce(t,y)/∂tᵢ = φᵢ - 𝟙{y = i}, where 𝟙{·} is the indicator function, that is, 𝟙{y = i} = 1 if y = i, and 𝟙{y = i} = 0 if y ≠ i. Alternatively, in vectorized notations, we have the following form which will be useful for Chapter 7: ∂ce(t,y)/∂t = φ - eᵧ, where eₛ ∈ ℝᵏ is the s-th natural basis vector (where the s-th entry is 1 and all other entries are zeros)."
+  },
+  {
+    "id": "lor_027",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Using Chain rule, we have that ∂ce((θ₁ᵀx,...,θₖᵀx),y)/∂θᵢ = ∂ce(t,y)/∂tᵢ · ∂tᵢ/∂θᵢ = (φᵢ - 𝟙{y = i}) · x. Therefore, the gradient of the loss with respect to the part of parameter θᵢ is ∂ℓ(θ)/∂θᵢ = Σⱼ₌₁ⁿ (φᵢ⁽ʲ⁾ - 𝟙{y(j) = i}) · x(j), where φᵢ⁽ʲ⁾ = exp(θᵢᵀx(j))/Σₛ₌₁ᵏ exp(θₛᵀx(j)) is the probability that the model predicts item i for example x(j). With the gradients above, one can implement (stochastic) gradient descent to minimize the loss function ℓ(θ)."
+  },
+  {
+    "id": "lor_028",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Returning to logistic regression with g(z) being the sigmoid function, let's now talk about a different algorithm for maximizing ℓ(θ). To get us started, let's consider Newton's method for finding a zero of a function. Specifically, suppose we have some function f : ℝ → ℝ, and we wish to find a value of θ so that f(θ) = 0. Here, θ ∈ ℝ is a real number. Newton's method performs the following update: θ := θ - f(θ)/f'(θ)."
+  },
+  {
+    "id": "lor_029",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "This method has a natural interpretation in which we can think of it as approximating the function f via a linear function that is tangent to f at the current guess θ, solving for where that linear function equals to zero, and letting the next guess for θ be where that linear function is zero."
+  },
+  {
+    "id": "lor_030",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the leftmost figure, we see the function f plotted along with the line y = 0. We're trying to find θ so that f(θ) = 0; the value of θ that achieves this is about 1.3. Suppose we initialized the algorithm with θ = 4.5. Newton's method then fits a straight line tangent to f at θ = 4.5, and solves for the where that line evaluates to 0. (Middle figure.) This give us the next guess for θ, which is about 2.8. The rightmost figure shows the result of running one more iteration, which the updates θ to about 1.8. After a few more iterations, we rapidly approach θ = 1.3."
+  },
+  {
+    "id": "lor_031",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Newton's method gives a way of getting to f(θ) = 0. What if we want to use it to maximize some function ℓ? The maxima of ℓ correspond to points where its first derivative ℓ'(θ) is zero. So, by letting f(θ) = ℓ'(θ), we can use the same algorithm to maximize ℓ, and we obtain update rule: θ := θ - ℓ'(θ)/ℓ''(θ). (Something to think about: How would this change if we wanted to use Newton's method to minimize rather than maximize a function?)"
+  },
+  {
+    "id": "lor_032",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Lastly, in our logistic regression setting, θ is vector-valued, so we need to generalize Newton's method to this setting. The generalization of Newton's method to this multidimensional setting (also called the Newton-Raphson method) is given by θ := θ - H⁻¹∇θℓ(θ). Here, ∇θℓ(θ) is, as usual, the vector of partial derivatives of ℓ(θ) with respect to the θᵢ's; and H is an d-by-d matrix (actually, d+1-by-d+1, assuming that we include the intercept term) called the Hessian, whose entries are given by Hᵢⱼ = ∂²ℓ(θ)/∂θᵢ∂θⱼ."
+  },
+  {
+    "id": "lor_033",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton's Method",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Newton's method typically enjoys faster convergence than (batch) gradient descent, and requires many fewer iterations to get very close to the minimum. One iteration of Newton's can, however, be more expensive than one iteration of gradient descent, since it requires finding and inverting an d-by-d Hessian; but so long as d is not too large, it is usually much faster overall. When Newton's method is applied to maximize the logistic regression log likelihood function ℓ(θ), the resulting method is also called Fisher scoring."
+  },
+  
+  {
+    "id": "gen_001",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Introduction",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "So far, we've mainly been talking about learning algorithms that model p(y|x; θ), the conditional distribution of y given x. For instance, logistic regression modeled p(y|x;θ) as h_θ(x) = g(θ^T x) where g is the sigmoid function. In these notes, we'll talk about a different type of learning algorithm."
+  },
+  {
+    "id": "gen_002",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Discriminative vs Generative",
+    "difficulty": "beginner",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Consider a classification problem in which we want to learn to distinguish between elephants (y = 1) and dogs (y = 0), based on some features of an animal. Given a training set, an algorithm like logistic regression or the perceptron algorithm (basically) tries to find a straight line—that is, a decision boundary—that separates the elephants and dogs. Then, to classify a new animal as either an elephant or a dog, it checks on which side of the decision boundary it falls, and makes its prediction accordingly."
+  },
+  {
+    "id": "gen_003",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Discriminative vs Generative",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here's a different approach. First, looking at elephants, we can build a model of what elephants look like. Then, looking at dogs, we can build a separate model of what dogs look like. Finally, to classify a new animal, we can match the new animal against the elephant model, and match it against the dog model, to see whether the new animal looks more like the elephants or more like the dogs we had seen in the training set."
+  },
+  {
+    "id": "gen_004",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Discriminative vs Generative",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Algorithms that try to learn p(y|x) directly (such as logistic regression), or algorithms that try to learn mappings directly from the space of inputs X to the labels {0,1}, (such as the perceptron algorithm) are called discriminative learning algorithms. Here, we'll talk about algorithms that instead try to model p(x|y) (and p(y)). These algorithms are called generative learning algorithms. For instance, if y indicates whether an example is a dog (0) or an elephant (1), then p(x|y = 0) models the distribution of dogs' features, and p(x|y = 1) models the distribution of elephants' features."
+  },
+  {
+    "id": "gen_005",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Bayes Rule",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "After modeling p(y) (called the class priors) and p(x|y), our algorithm can then use Bayes rule to derive the posterior distribution on y given x: p(y|x) = p(x|y)p(y)/p(x). Here, the denominator is given by p(x) = p(x|y = 1)p(y = 1) + p(x|y = 0)p(y = 0) (you should be able to verify that this is true from the standard properties of probabilities), and thus can also be expressed in terms of the quantities p(x|y) and p(y) that we've learned."
+  },
+  {
+    "id": "gen_006",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Bayes Rule",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Actually, if were calculating p(y|x) in order to make a prediction, then we don't actually need to calculate the denominator, since argmax_y p(y|x) = argmax_y p(x|y)p(y)/p(x) = argmax_y p(x|y)p(y)."
+  },
+  {
+    "id": "gen_007",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The first generative learning algorithm that we'll look at is Gaussian discriminant analysis (GDA). In this model, we'll assume that p(x|y) is distributed according to a multivariate normal distribution. Let's talk briefly about the properties of multivariate normal distributions before moving on to the GDA model itself."
+  },
+  {
+    "id": "gen_008",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The multivariate normal distribution in d-dimensions, also called the multivariate Gaussian distribution, is parameterized by a mean vector μ ∈ R^d and a covariance matrix Σ ∈ R^(d×d), where Σ ≥ 0 is symmetric and positive semi-definite. Also written \"N(μ,Σ)\", its density is given by: p(x;μ,Σ) = 1/((2π)^(d/2)|Σ|^(1/2)) exp(-1/2 (x - μ)^T Σ^(-1) (x - μ)). In the equation above, \"|Σ|\" denotes the determinant of the matrix Σ."
+  },
+  {
+    "id": "gen_009",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "For a random variable X distributed N(μ,Σ), the mean is (unsurprisingly) given by μ: E[X] = ∫_x x p(x;μ,Σ)dx = μ."
+  },
+  {
+    "id": "gen_010",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The covariance of a vector-valued random variable Z is defined as Cov(Z) = E[(Z - E[Z])(Z - E[Z])^T]. This generalizes the notion of the variance of a real-valued random variable. The covariance can also be defined as Cov(Z) = E[ZZ^T] - (E[Z])(E[Z])^T. (You should be able to prove to yourself that these two definitions are equivalent.) If X ~ N(μ,Σ), then Cov(X) = Σ."
+  },
+  {
+    "id": "gen_011",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The left-most figure shows a Gaussian with mean zero (that is, the 2x1 zero-vector) and covariance matrix Σ = I (the 2x2 identity matrix). A Gaussian with zero mean and identity covariance is also called the standard normal distribution. The middle figure shows the density of a Gaussian with zero mean and Σ = 0.6I; and in the rightmost figure shows one with, Σ = 2I. We see that as Σ becomes larger, the Gaussian becomes more \"spread-out,\" and as it becomes smaller, the distribution becomes more \"compressed.\""
+  },
+  {
+    "id": "gen_012",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The figures above show Gaussians with mean 0, and with covariance matrices respectively Σ = [[1, 0], [0, 1]]; Σ = [[1, 0.5], [0.5, 1]]; Σ = [[1, 0.8], [0.8, 1]]. The leftmost figure shows the familiar standard normal distribution, and we see that as we increase the off-diagonal entry in Σ, the density becomes more \"compressed\" towards the 45° line (given by x₁ = x₂)."
+  },
+  {
+    "id": "gen_013",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The plots above used, respectively, Σ = [[1, -0.5], [-0.5, 1]]; Σ = [[1, -0.8], [-0.8, 1]]; Σ = [[3, 0.8], [0.8, 1]]. From the leftmost and middle figures, we see that by decreasing the off-diagonal elements of the covariance matrix, the density now becomes \"compressed\" again, but in the opposite direction. Lastly, as we vary the parameters, more generally the contours will form ellipses (the rightmost figure showing an example)."
+  },
+  {
+    "id": "gen_014",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "As our last set of examples, fixing Σ = I, by varying μ, we can also move the mean of the density around."
+  },
+  {
+    "id": "gen_015",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "When we have a classification problem in which the input features x are continuous-valued random variables, we can then use the Gaussian Discriminant Analysis (GDA) model, which models p(x|y) using a multivariate normal distribution. The model is: y ~ Bernoulli(φ), x|y = 0 ~ N(μ₀, Σ), x|y = 1 ~ N(μ₁, Σ). Writing out the distributions, this is: p(y) = φ^y(1-φ)^(1-y), p(x|y = 0) = 1/((2π)^(d/2)|Σ|^(1/2)) exp(-1/2(x-μ₀)^T Σ^(-1)(x-μ₀)), p(x|y = 1) = 1/((2π)^(d/2)|Σ|^(1/2)) exp(-1/2(x-μ₁)^T Σ^(-1)(x-μ₁))."
+  },
+  {
+    "id": "gen_016",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here, the parameters of our model are φ, Σ, μ₀ and μ₁. (Note that while there're two different mean vectors μ₀ and μ₁, this model is usually applied using only one covariance matrix Σ.) The log-likelihood of the data is given by ℓ(φ, μ₀, μ₁, Σ) = log ∏ᵢ₌₁ⁿ p(x⁽ⁱ⁾, y⁽ⁱ⁾; φ, μ₀, μ₁, Σ) = log ∏ᵢ₌₁ⁿ p(x⁽ⁱ⁾|y⁽ⁱ⁾; μ₀, μ₁, Σ)p(y⁽ⁱ⁾; φ)."
+  },
+  {
+    "id": "gen_017",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "By maximizing ℓ with respect to the parameters, we find the maximum likelihood estimate of the parameters to be: φ = (1/n)∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}, μ₀ = ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0}x⁽ⁱ⁾ / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0}, μ₁ = ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}x⁽ⁱ⁾ / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}, Σ = (1/n)∑ᵢ₌₁ⁿ (x⁽ⁱ⁾ - μ_y⁽ⁱ⁾)(x⁽ⁱ⁾ - μ_y⁽ⁱ⁾)^T."
+  },
+  {
+    "id": "gen_018",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Pictorially, what the algorithm is doing during training is to fit two Gaussians to the two classes of data. Then, for a new test data point, we predict the label by checking which of the two Gaussians has a higher posterior probability of having generated the test example."
+  },
+  {
+    "id": "gen_019",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "GDA vs Logistic Regression",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The GDA model has an interesting relationship to logistic regression. If we view the quantity p(y = 1|x; φ, μ₀, μ₁, Σ) as a function of x, we'll find that it can be expressed in the form 1/(1 + exp(-θ^T x)) for some appropriate θ that is a function of φ, μ₀, μ₁, Σ. This is exactly the form that logistic regression uses to model p(y = 1|x). When would we prefer one model over another?"
+  },
+  {
+    "id": "gen_020",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "GDA vs Logistic Regression",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "GDA and logistic regression will, in general, give different decision boundaries when trained on the same dataset. Which is better? We just argued that if p(x|y) is multivariate gaussian (with shared Σ), then p(y|x) necessarily follows a logistic function. The converse, however, is not true; i.e., p(y|x) being a logistic function does not imply p(x|y) is multivariate gaussian. This shows that GDA makes stronger modeling assumptions about the data than does logistic regression."
+  },
+  {
+    "id": "gen_021",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "GDA vs Logistic Regression",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "It turns out that when these modeling assumptions are correct, then GDA will find better fits to the data, and is a better model. Specifically, when p(x|y) is indeed gaussian (with shared Σ), then GDA is asymptotically efficient. Informally, this means that in the limit of very large training sets (large n), there is no algorithm that is strictly better than GDA (in terms of, say, how accurately they estimate p(y|x)). In particular, it can be shown that in this setting, GDA will be a better algorithm than logistic regression; and more generally, even for small training set sizes, we would generally expect GDA to better."
+  },
+  {
+    "id": "gen_022",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "GDA vs Logistic Regression",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In contrast, by making significantly weaker assumptions, logistic regression is also more robust and less sensitive to incorrect modeling assumptions. There are many different sets of assumptions that would lead to p(y|x) taking the form of a logistic function. For example, if x|y = 0 ~ Poisson(λ₀), and x|y = 1 ~ Poisson(λ₁), then p(y|x) will be logistic. Logistic regression will also work well on Poisson data like this. But if we were to use GDA on such data—and fit Gaussian distributions to such non-Gaussian data—then the results will be less predictable, and GDA may (or may not) do well."
+  },
+  {
+    "id": "gen_023",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "GDA vs Logistic Regression",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To summarize: GDA makes stronger modeling assumptions, and is more data efficient (i.e., requires less training data to learn \"well\") when the modeling assumptions are correct or at least approximately correct. Logistic regression makes weaker assumptions, and is significantly more robust to deviations from modeling assumptions. Specifically, when the data is indeed non-Gaussian, then in the limit of large datasets, logistic regression will almost always do better than GDA. For this reason, in practice logistic regression is used more often than GDA."
+  },
+  {
+    "id": "gen_024",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In GDA, the feature vectors x were continuous, real-valued vectors. Let's now talk about a different learning algorithm in which the xⱼ's are discrete-valued. For our motivating example, consider building an email spam filter using machine learning. Here, we wish to classify messages according to whether they are unsolicited commercial (spam) email, or non-spam email. After learning to do this, we can then have our mail reader automatically filter out the spam messages and perhaps place them in a separate mail folder. Classifying emails is one example of a broader set of problems called text classification."
+  },
+  {
+    "id": "gen_025",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let's say we have a training set (a set of emails labeled as spam or non-spam). We'll begin our construction of our spam filter by specifying the features xⱼ used to represent an email. We will represent an email via a feature vector whose length is equal to the number of words in the dictionary. Specifically, if an email contains the j-th word of the dictionary, then we will set xⱼ = 1; otherwise, we let xⱼ = 0. For instance, the vector x = [1, 1, 0, 1, ..., 1, 0, 0]^T is used to represent an email that contains the first, second, and fourth words of the dictionary. The set of words encoded into the feature vector is called the vocabulary, so the dimension of x is equal to the size of the vocabulary."
+  },
+  {
+    "id": "gen_026",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Having chosen our feature vector, we now want to build a generative model. So, we have to model p(x|y). But if we have, say, a vocabulary of 50000 words, then x ∈ {0,1}^50000 (x is a 50000-dimensional vector of 0's and 1's), and if we were to model x explicitly with a multinomial distribution over the 2^50000 possible outcomes, then we'd end up with a (2^50000 - 1)-dimensional parameter vector. This is clearly too many parameters."
+  },
+  {
+    "id": "gen_027",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes Assumption",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To model p(x|y), we will therefore make a very strong assumption. We will assume that the xⱼ's are conditionally independent given y. This assumption is called the Naive Bayes (NB) assumption, and the resulting algorithm is called the Naive Bayes classifier. For instance, if y = 1 means spam email; \"buy\" is word 2087 and \"price\" is word 39831; then we are assuming that if I tell you y = 1 (that a particular piece of email is spam), then knowledge of x₂₀₈₇ (knowledge of whether \"buy\" appears in the message) will have no effect on your beliefs about the value of x₃₉₈₃₁ (whether \"price\" appears)."
+  },
+  {
+    "id": "gen_028",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes Assumption",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Formally, this can be written p(x₂₀₈₇|y) = p(x₂₀₈₇|y, x₃₉₈₃₁). (Note that this is not the same as saying that x₂₀₈₇ and x₃₉₈₃₁ are independent, which would have been written \"p(x₂₀₈₇) = p(x₂₀₈₇|x₃₉₈₃₁)\"; rather, we are only assuming that x₂₀₈₇ and x₃₉₈₃₁ are conditionally independent given y.)"
+  },
+  {
+    "id": "gen_029",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes Assumption",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We now have: p(x₁,...,x_d|y) = p(x₁|y)p(x₂|y,x₁)p(x₃|y,x₁,x₂)···p(x_d|y,x₁,...,x_(d-1)) = p(x₁|y)p(x₂|y)p(x₃|y)···p(x_d|y) = ∏ⱼ₌₁ᵈ p(xⱼ|y). The first equality simply follows from the usual properties of probabilities, and the second equality used the NB assumption. We note that even though the Naive Bayes assumption is an extremely strong assumption, the resulting algorithm works well on many problems."
+  },
+  {
+    "id": "gen_030",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Our model is parameterized by φⱼ|y=1 = p(xⱼ = 1|y = 1), φⱼ|y=0 = p(xⱼ = 1|y = 0), and φy = p(y = 1). As usual, given a training set {(x⁽ⁱ⁾, y⁽ⁱ⁾); i = 1, . . . , n}, we can write down the joint likelihood of the data: L(φy, φⱼ|y=0, φⱼ|y=1) = ∏ᵢ₌₁ⁿ p(x⁽ⁱ⁾, y⁽ⁱ⁾)."
+  },
+  {
+    "id": "gen_031",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Maximizing this with respect to φy, φⱼ|y=0 and φⱼ|y=1 gives the maximum likelihood estimates: φⱼ|y=1 = ∑ᵢ₌₁ⁿ 𝟙{xⱼ⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 1} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}, φⱼ|y=0 = ∑ᵢ₌₁ⁿ 𝟙{xⱼ⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 0} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0}, φy = ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1} / n. In the equations above, the \"∧\" symbol means \"and.\" The parameters have a very natural interpretation. For instance, φⱼ|y=1 is just the fraction of the spam (y = 1) emails in which word j does appear."
+  },
+  {
+    "id": "gen_032",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Having fit all these parameters, to make a prediction on a new example with features x, we then simply calculate p(y = 1|x) = p(x|y = 1)p(y = 1)/p(x) = [∏ⱼ₌₁ᵈ p(xⱼ|y = 1)]p(y = 1) / {[∏ⱼ₌₁ᵈ p(xⱼ|y = 1)]p(y = 1) + [∏ⱼ₌₁ᵈ p(xⱼ|y = 0)]p(y = 0)}, and pick whichever class has the higher posterior probability."
+  },
+  {
+    "id": "gen_033",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Lastly, we note that while we have developed the Naive Bayes algorithm mainly for the case of problems where the features xⱼ are binary-valued, the generalization to where xⱼ can take values in {1, 2, ..., kⱼ} is straightforward. Here, we would simply model p(xⱼ|y) as multinomial rather than as Bernoulli. Indeed, even if some original input attribute (say, the living area of a house, as in our earlier example) were continuous valued, it is quite common to discretize it—that is, turn it into a small set of discrete values—and apply Naive Bayes."
+  },
+  {
+    "id": "gen_034",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "For instance, if we use some feature xⱼ to represent living area, we might discretize the continuous values as follows: Living area (sq. feet) < 400: xᵢ = 1; 400-800: xᵢ = 2; 800-1200: xᵢ = 3; 1200-1600: xᵢ = 4; >1600: xᵢ = 5. Thus, for a house with living area 890 square feet, we would set the value of the corresponding feature xⱼ to 3. We can then apply the Naive Bayes algorithm, and model p(xⱼ|y) with a multinomial distribution, as described previously. When the original, continuous-valued attributes are not well modeled by a multivariate normal distribution, discretizing the features and using Naive Bayes (instead of GDA) will often result in a better classifier."
+  },
+  {
+    "id": "gen_035",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The Naive Bayes algorithm as we have described it will work fairly well for many problems, but there is a simple change that makes it work much better, especially for text classification. Let's briefly discuss a problem with the algorithm in its current form, and then talk about how we can fix it."
+  },
+  {
+    "id": "gen_036",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Consider spam/email classification, and let's suppose that, we are in the year of 20xx, after completing CS229 and having done excellent work on the project, you decide around May 20xx to submit work you did to the NeurIPS conference for publication. Because you end up discussing the conference in your emails, you also start getting messages with the word \"neurips\" in it. But this is your first NeurIPS paper, and until this time, you had not previously seen any emails containing the word \"neurips\"; in particular \"neurips\" did not ever appear in your training set of spam/non-spam emails."
+  },
+  {
+    "id": "gen_037",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Assuming that \"neurips\" was the 35000th word in the dictionary, your Naive Bayes spam filter therefore had picked its maximum likelihood estimates of the parameters φ₃₅₀₀₀|y to be φ₃₅₀₀₀|y=1 = ∑ᵢ₌₁ⁿ 𝟙{x₃₅₀₀₀⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 1} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1} = 0, φ₃₅₀₀₀|y=0 = ∑ᵢ₌₁ⁿ 𝟙{x₃₅₀₀₀⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 0} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0} = 0. I.e., because it has never seen \"neurips\" before in either spam or non-spam training examples, it thinks the probability of seeing it in either type of email is zero."
+  },
+  {
+    "id": "gen_038",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Hence, when trying to decide if one of these messages containing \"neurips\" is spam, it calculates the class posterior probabilities, and obtains p(y = 1|x) = [∏ⱼ₌₁ᵈ p(xⱼ|y = 1)p(y = 1)] / {[∏ⱼ₌₁ᵈ p(xⱼ|y = 1)]p(y = 1) + [∏ⱼ₌₁ᵈ p(xⱼ|y = 0)]p(y = 0)} = 0/0. This is because each of the terms \"∏ⱼ₌₁ᵈ p(xⱼ|y)\" includes a term p(x₃₅₀₀₀|y) = 0 that is multiplied into it. Hence, our algorithm obtains 0/0, and doesn't know how to make a prediction."
+  },
+  {
+    "id": "gen_039",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Stating the problem more broadly, it is statistically a bad idea to estimate the probability of some event to be zero just because you haven't seen it before in your finite training set. Take the problem of estimating the mean of a multinomial random variable z taking values in {1,...,k}. We can parameterize our multinomial with φⱼ = p(z = j). Given a set of n independent observations {z⁽¹⁾,...,z⁽ⁿ⁾}, the maximum likelihood estimates are given by φⱼ = ∑ᵢ₌₁ⁿ 𝟙{z⁽ⁱ⁾ = j} / n."
+  },
+  {
+    "id": "gen_040",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "As we saw previously, if we were to use these maximum likelihood estimates, then some of the φⱼ's might end up as zero, which was a problem. To avoid this, we can use Laplace smoothing, which replaces the above estimate with φⱼ = (1 + ∑ᵢ₌₁ⁿ 𝟙{z⁽ⁱ⁾ = j}) / (k + n). Here, we've added 1 to the numerator, and k to the denominator. Note that ∑ⱼ₌₁ᵏ φⱼ = 1 still holds (check this yourself!), which is a desirable property since the φⱼ's are estimates for probabilities that we know must sum to 1. Also, φⱼ ≠ 0 for all values of j, solving our problem of probabilities being estimated as zero."
+  },
+  {
+    "id": "gen_041",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Under certain (arguably quite strong) conditions, it can be shown that the Laplace smoothing actually gives the optimal estimator of the φⱼ's. Returning to our Naive Bayes classifier, with Laplace smoothing, we therefore obtain the following estimates of the parameters: φⱼ|y=1 = (1 + ∑ᵢ₌₁ⁿ 𝟙{xⱼ⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 1}) / (2 + ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}), φⱼ|y=0 = (1 + ∑ᵢ₌₁ⁿ 𝟙{xⱼ⁽ⁱ⁾ = 1 ∧ y⁽ⁱ⁾ = 0}) / (2 + ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0})."
+  },
+  {
+    "id": "gen_042",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "(In practice, it usually doesn't matter much whether we apply Laplace smoothing to φy or not, since we will typically have a fair fraction each of spam and non-spam messages, so φy will be a reasonable estimate of p(y = 1) and will be quite far from 0 anyway.)"
+  },
+  {
+    "id": "gen_043",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Event Models",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To close off our discussion of generative learning algorithms, let's talk about one more model that is specifically for text classification. While Naive Bayes as we've presented it will work well for many classification problems, for text classification, there is a related model that does even better."
+  },
+  {
+    "id": "gen_044",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Bernoulli Event Model",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the specific context of text classification, Naive Bayes as presented uses the what's called the Bernoulli event model (or sometimes multi-variate Bernoulli event model). In this model, we assumed that the way an email is generated is that first it is randomly determined (according to the class priors p(y)) whether a spammer or non-spammer will send you your next message. Then, the person sending the email runs through the dictionary, deciding whether to include each word j in that email independently and according to the probabilities p(xⱼ = 1|y) = φⱼ|y. Thus, the probability of a message was given by p(y) ∏ⱼ₌₁ᵈ p(xⱼ|y)."
+  },
+  {
+    "id": "gen_045",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Here's a different model, called the Multinomial event model. To describe this model, we will use a different notation and set of features for representing emails. We let xⱼ denote the identity of the j-th word in the email. Thus, xⱼ is now an integer taking values in {1,...,|V|}, where |V| is the size of our vocabulary (dictionary). An email of d words is now represented by a vector (x₁,x₂,...,x_d) of length d; note that d can vary for different documents. For instance, if an email starts with \"A NeurIPS ...,\" then x₁ = 1 (\"a\" is the first word in the dictionary), and x₂ = 35000 (if \"neurips\" is the 35000th word in the dictionary)."
+  },
+  {
+    "id": "gen_046",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "In the multinomial event model, we assume that the way an email is generated is via a random process in which spam/non-spam is first determined (according to p(y)) as before. Then, the sender of the email writes the email by first generating x₁ from some multinomial distribution over words (p(x₁|y)). Next, the second word x₂ is chosen independently of x₁ but from the same multinomial distribution, and similarly for x₃, x₄, and so on, until all d words of the email have been generated. Thus, the overall probability of a message is given by p(y) ∏ⱼ₌₁ᵈ p(xⱼ|y)."
+  },
+  {
+    "id": "gen_047",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Note that this formula looks like the one we had earlier for the probability of a message under the Bernoulli event model, but that the terms in the formula now mean very different things. In particular xⱼ|y is now a multinomial, rather than a Bernoulli distribution."
+  },
+  {
+    "id": "gen_048",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "The parameters for our new model are φy = p(y) as before, φₖ|y=1 = p(xⱼ = k|y = 1) (for any j) and φₖ|y=0 = p(xⱼ = k|y = 0). Note that we have assumed that p(xⱼ|y) is the same for all values of j (i.e., that the distribution according to which a word is generated does not depend on its position j within the email)."
+  },
+  {
+    "id": "gen_049",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "If we are given a training set {(x⁽ⁱ⁾,y⁽ⁱ⁾); i = 1,...,n} where x⁽ⁱ⁾ = (x₁⁽ⁱ⁾, x₂⁽ⁱ⁾, ..., x_dᵢ⁽ⁱ⁾) (here, dᵢ is the number of words in the i-training example), the likelihood of the data is given by L(φy, φₖ|y=0, φₖ|y=1) = ∏ᵢ₌₁ⁿ p(x⁽ⁱ⁾, y⁽ⁱ⁾) = ∏ᵢ₌₁ⁿ [∏ⱼ₌₁^dᵢ p(xⱼ⁽ⁱ⁾|y; φₖ|y=0, φₖ|y=1)] p(y⁽ⁱ⁾; φy)."
+  },
+  {
+    "id": "gen_050",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "Maximizing this yields the maximum likelihood estimates of the parameters: φₖ|y=1 = ∑ᵢ₌₁ⁿ ∑ⱼ₌₁^dᵢ 𝟙{xⱼ⁽ⁱ⁾ = k ∧ y⁽ⁱ⁾ = 1} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}dᵢ, φₖ|y=0 = ∑ᵢ₌₁ⁿ ∑ⱼ₌₁^dᵢ 𝟙{xⱼ⁽ⁱ⁾ = k ∧ y⁽ⁱ⁾ = 0} / ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0}dᵢ, φy = ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1} / n."
+  },
+  {
+    "id": "gen_051",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multinomial Event Model",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "If we were to apply Laplace smoothing (which is needed in practice for good performance) when estimating φₖ|y=0 and φₖ|y=1, we add 1 to the numerators and |V| to the denominators, and obtain: φₖ|y=1 = (1 + ∑ᵢ₌₁ⁿ ∑ⱼ₌₁^dᵢ 𝟙{xⱼ⁽ⁱ⁾ = k ∧ y⁽ⁱ⁾ = 1}) / (|V| + ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 1}dᵢ), φₖ|y=0 = (1 + ∑ᵢ₌₁ⁿ ∑ⱼ₌₁^dᵢ 𝟙{xⱼ⁽ⁱ⁾ = k ∧ y⁽ⁱ⁾ = 0}) / (|V| + ∑ᵢ₌₁ⁿ 𝟙{y⁽ⁱ⁾ = 0}dᵢ)."
+  },
+  {
+    "id": "gen_052",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "beginner",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "While not necessarily the very best classification algorithm, the Naive Bayes classifier often works surprisingly well. It is often also a very good \"first thing to try,\" given its simplicity and ease of implementation."
+  },
+  
+  {
+    "id": "glm_001",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Introduction",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "So far, we've seen a regression example, and a classification example. In the regression example, we had y|x;θ ~ N(μ,σ²), and in the classification one, y|x;θ ~ Bernoulli(φ), for some appropriate definitions of μ and φ as functions of x and θ. In this section, we will show that both of these methods are special cases of a broader family of models, called Generalized Linear Models (GLMs). We will also show how other models in the GLM family can be derived and applied to other classification and regression problems."
+  },
+  {
+    "id": "glm_002",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To work our way up to GLMs, we will begin by defining exponential family distributions. We say that a class of distributions is in the exponential family if it can be written in the form p(y; η) = b(y)exp(η^T T(y) - a(η)). Here, η is called the natural parameter (also called the canonical parameter) of the distribution; T(y) is the sufficient statistic (for the distributions we consider, it will often be the case that T(y) = y); and a(η) is the log partition function. The quantity e^(-a(η)) essentially plays the role of a normalization constant, that makes sure the distribution p(y;η) sums/integrates over y to 1."
+  },
+  {
+    "id": "glm_003",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "A fixed choice of T, a and b defines a family (or set) of distributions that is parameterized by η; as we vary η, we then get different distributions within this family."
+  },
+  {
+    "id": "glm_004",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We now show that the Bernoulli and the Gaussian distributions are examples of exponential family distributions. The Bernoulli distribution with mean φ, written Bernoulli(φ), specifies a distribution over y ∈ {0,1}, so that p(y = 1;φ) = φ; p(y = 0;φ) = 1-φ. As we vary φ, we obtain Bernoulli distributions with different means. We now show that this class of Bernoulli distributions, ones obtained by varying φ, is in the exponential family; i.e., that there is a choice of T, a and b so that Equation (3.1) becomes exactly the class of Bernoulli distributions."
+  },
+  {
+    "id": "glm_005",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We write the Bernoulli distribution as: p(y; φ) = φ^y(1-φ)^(1-y) = exp(y log φ + (1-y)log(1-φ)) = exp(log[φ/(1-φ)] y + log(1-φ)). Thus, the natural parameter is given by η = log(φ/(1-φ)). Interestingly, if we invert this definition for η by solving for φ in terms of η, we obtain φ = 1/(1 + e^(-η)). This is the familiar sigmoid function! This will come up again when we derive logistic regression as a GLM."
+  },
+  {
+    "id": "glm_006",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To complete the formulation of the Bernoulli distribution as an exponential family distribution, we also have T(y) = y, a(η) = -log(1-φ) = log(1+e^η), b(y) = 1. This shows that the Bernoulli distribution can be written in the form of Equation (3.1), using an appropriate choice of T, a and b."
+  },
+  {
+    "id": "glm_007",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "Let's now move on to consider the Gaussian distribution. Recall that, when deriving linear regression, the value of σ² had no effect on our final choice of θ and h_θ(x). Thus, we can choose an arbitrary value for σ² without changing anything. To simplify the derivation below, let's set σ² = 1."
+  },
+  {
+    "id": "glm_008",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "We then have: p(y; μ) = 1/√(2π) exp(-1/2(y - μ)²) = 1/√(2π) exp(-1/2 y²) · exp(μy - 1/2 μ²). Thus, we see that the Gaussian is in the exponential family, with η = μ, T(y) = y, a(η) = μ²/2 = η²/2, b(y) = (1/√(2π))exp(-y²/2)."
+  },
+  {
+    "id": "glm_009",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "There're many other distributions that are members of the exponential family: The multinomial (which we'll see later), the Poisson (for modelling count-data; also see the problem set); the gamma and the exponential (for modelling continuous, non-negative random variables, such as time intervals); the beta and the Dirichlet (for distributions over probabilities); and many more. In the next section, we will describe a general \"recipe\" for constructing models in which y (given x and θ) comes from any of these distributions."
+  },
+  {
+    "id": "glm_010",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Construction",
+    "difficulty": "intermediate",
+    "content_type": "example",
+    "source": "Andrew Ng ML Notes",
+    "text": "Suppose you would like to build a model to estimate the number y of customers arriving in your store (or number of page-views on your website) in any given hour, based on certain features x such as store promotions, recent advertising, weather, day-of-week, etc. We know that the Poisson distribution usually gives a good model for numbers of visitors. Knowing this, how can we come up with a model for our problem? Fortunately, the Poisson is an exponential family distribution, so we can apply a Generalized Linear Model (GLM). In this section, we will we will describe a method for constructing GLM models for problems such as these."
+  },
+  {
+    "id": "glm_011",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Construction",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "More generally, consider a classification or regression problem where we would like to predict the value of some random variable y as a function of x. To derive a GLM for this problem, we will make the following three assumptions about the conditional distribution of y given x and about our model:"
+  },
+  {
+    "id": "glm_012",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "1. y | x;θ ~ ExponentialFamily(η). I.e., given x and θ, the distribution of y follows some exponential family distribution, with parameter η. 2. Given x, our goal is to predict the expected value of T(y) given x. In most of our examples, we will have T(y) = y, so this means we would like the prediction h(x) output by our learned hypothesis h to satisfy h(x) = E[y|x]. (Note that this assumption is satisfied in the choices for h_θ(x) for both logistic regression and linear regression. For instance, in logistic regression, we had h_θ(x) = p(y = 1|x;θ) = 0·p(y = 0|x; θ) + 1 · p(y = 1|x;θ) = E[y|x;θ].) 3. The natural parameter η and the inputs x are related linearly: η = θ^T x. (Or, if η is vector-valued, then η_i = θ_i^T x.)"
+  },
+  {
+    "id": "glm_013",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "The third of these assumptions might seem the least well justified of the above, and it might be better thought of as a \"design choice\" in our recipe for designing GLMs, rather than as an assumption per se. These three assumptions/design choices will allow us to derive a very elegant class of learning algorithms, namely GLMs, that have many desirable properties such as ease of learning. Furthermore, the resulting models are often very effective for modelling different types of distributions over y; for example, we will shortly show that both logistic regression and ordinary least squares can both be derived as GLMs."
+  },
+  {
+    "id": "glm_014",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "To show that ordinary least squares is a special case of the GLM family of models, consider the setting where the target variable y (also called the response variable in GLM terminology) is continuous, and we model the conditional distribution of y given x as a Gaussian N(μ,σ²). (Here, μ may depend x.) So, we let the ExponentialFamily(η) distribution above be the Gaussian distribution. As we saw previously, in the formulation of the Gaussian as an exponential family distribution, we had μ = η."
+  },
+  {
+    "id": "glm_015",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "So, we have h_θ(x) = E[y|x;θ] = μ = η = θ^T x. The first equality follows from Assumption 2, above; the second equality follows from the fact that y|x;θ ~ N(μ,σ²), and so its expected value is given by μ; the third equality follows from Assumption 1 (and our earlier derivation showing that μ = η in the formulation of the Gaussian as an exponential family distribution); and the last equality follows from Assumption 3."
+  },
+  {
+    "id": "glm_016",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "intermediate",
+    "content_type": "intuitive",
+    "source": "Andrew Ng ML Notes",
+    "text": "We now consider logistic regression. Here we are interested in binary classification, so y ∈ {0,1}. Given that y is binary-valued, it therefore seems natural to choose the Bernoulli family of distributions to model the conditional distribution of y given x. In our formulation of the Bernoulli distribution as an exponential family distribution, we had φ = 1/(1 + e^(-η)). Furthermore, note that if y|x;θ ~ Bernoulli(φ), then E[y|x;θ] = φ."
+  },
+  {
+    "id": "glm_017",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "So, following a similar derivation as the one for ordinary least squares, we get: h_θ(x) = E[y|x;θ] = φ = 1/(1+e^(-η)) = 1/(1+e^(-θ^T x)). So, this gives us hypothesis functions of the form h_θ(x) = 1/(1 + e^(-θ^T x)). If you are previously wondering how we came up with the form of the logistic function 1/(1 + e^(-z)), this gives one answer: Once we assume that y conditioned on x is Bernoulli, it arises as a consequence of the definition of GLMs and exponential family distributions."
+  },
+  {
+    "id": "glm_018",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Response and Link Functions",
+    "difficulty": "intermediate",
+    "content_type": "formal",
+    "source": "Andrew Ng ML Notes",
+    "text": "To introduce a little more terminology, the function g giving the distribution's mean as a function of the natural parameter (g(η) = E[T(y);η]) is called the canonical response function. Its inverse, g^(-1), is called the canonical link function. Thus, the canonical response function for the Gaussian family is just the identify function; and the canonical response function for the Bernoulli is the logistic function."
+  }
+
+]

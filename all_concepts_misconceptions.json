@@ -1,0 +1,1266 @@
+[
+  {
+    "id": "lr_mis_001",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The hypothesis function h(x) must always produce values within the range of the training data's y values."
+  },
+  {
+    "id": "lr_corr_001",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The hypothesis h(x) = θ₀ + θ₁x₁ + θ₂x₂ + ... is a linear function that can produce any real-valued output. It is not constrained to the range of training y values and can extrapolate beyond them based on the learned parameters θ."
+  },
+  {
+    "id": "lr_mis_002",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Setting x₀ = 1 adds an extra feature to the dataset that must be measured or collected."
+  },
+  {
+    "id": "lr_corr_002",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Setting x₀ = 1 is a notational convention to represent the intercept term θ₀ in vector form. It allows us to write h(x) = θᵀx compactly, where both θ and x are vectors. This is not a real feature but a mathematical trick for convenience."
+  },
+  {
+    "id": "lr_mis_003",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The factor of 1/2 in the cost function J(θ) = (1/2)Σ(h(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is necessary for the cost function to work correctly."
+  },
+  {
+    "id": "lr_corr_003",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The factor of 1/2 is included for mathematical convenience. When we take the derivative of the squared term during gradient descent, the 2 from the power rule cancels with the 1/2, simplifying the calculations. The optimization result is the same whether we use 1/2 or not."
+  },
+  {
+    "id": "lr_mis_004",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The cost function J(θ) measures the error on a single training example at a time."
+  },
+  {
+    "id": "lr_corr_004",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The cost function J(θ) = (1/2)Σⁿᵢ₌₁(h(x⁽ⁱ⁾) - y⁽ⁱ⁾)² aggregates the squared errors across all n training examples. It provides a single scalar value representing how well the hypothesis fits the entire training set."
+  },
+  {
+    "id": "lr_mis_005",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In gradient descent, we should update θ₀ first, then θ₁, then θ₂, and so on in sequence."
+  },
+  {
+    "id": "lr_corr_005",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The gradient descent update θⱼ := θⱼ - α(∂/∂θⱼ)J(θ) must be performed simultaneously for all values of j. This means computing all partial derivatives using the current θ values, then updating all parameters at once, not sequentially."
+  },
+  {
+    "id": "lr_mis_006",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "A larger learning rate α always makes gradient descent converge faster to the optimal solution."
+  },
+  {
+    "id": "lr_corr_006",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "If the learning rate α is too large, gradient descent may overshoot the minimum, fail to converge, or even diverge. The learning rate must be chosen carefully to ensure convergence—smaller values are safer but slower, while larger values may be faster but risk instability."
+  },
+  {
+    "id": "lr_mis_007",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The LMS update rule increases θⱼ when the prediction h(x⁽ⁱ⁾) is greater than the actual value y⁽ⁱ⁾."
+  },
+  {
+    "id": "lr_corr_007",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The LMS update rule θⱼ := θⱼ + α(y⁽ⁱ⁾ - h(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾ actually decreases θⱼ when h(x⁽ⁱ⁾) > y⁽ⁱ⁾ and xⱼ⁽ⁱ⁾ is positive, because the error term (y⁽ⁱ⁾ - h(x⁽ⁱ⁾)) becomes negative. The update moves parameters in the direction that reduces the error."
+  },
+  {
+    "id": "lr_mis_008",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Batch gradient descent and stochastic gradient descent will always converge to the exact same parameter values."
+  },
+  {
+    "id": "lr_corr_008",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Batch gradient descent converges to the global minimum for linear regression. Stochastic gradient descent oscillates around the minimum and may never converge to a fixed point, though it gets close. However, both methods find good approximations, and stochastic gradient descent is often preferred for large datasets due to faster initial progress."
+  },
+  {
+    "id": "lr_mis_009",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Stochastic gradient descent updates parameters after looking at all training examples, just like batch gradient descent, but with a different formula."
+  },
+  {
+    "id": "lr_corr_009",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Stochastic gradient descent updates parameters after each individual training example, using θⱼ := θⱼ + α(y⁽ⁱ⁾ - h(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾. In contrast, batch gradient descent sums the gradients over all training examples before making a single update. This makes stochastic gradient descent faster to start making progress."
+  },
+  {
+    "id": "lr_mis_010",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Gradient descent can get stuck in local minima when optimizing the linear regression cost function, so the solution depends on initialization."
+  },
+  {
+    "id": "lr_corr_010",
+    "concept": "Linear Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The linear regression cost function J(θ) is a convex quadratic function with only one global minimum and no local minima. Therefore, gradient descent always converges to the same global optimum regardless of initialization, assuming the learning rate is not too large."
+  },
+  {
+    "id": "lr_mis_011",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The normal equation and gradient descent will give different optimal parameters θ* for the same dataset."
+  },
+  {
+    "id": "lr_corr_011",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Both the normal equation θ = (XᵀX)⁻¹Xᵀy and gradient descent (when properly converged) find the same optimal parameters that minimize J(θ). The normal equation solves for θ analytically in one step, while gradient descent finds it iteratively."
+  },
+  {
+    "id": "lr_mis_012",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The normal equation is always better than gradient descent because it finds the exact solution immediately without iteration."
+  },
+  {
+    "id": "lr_corr_012",
+    "concept": "Linear Regression",
+    "subconcept": "Normal Equation",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The normal equation requires computing (XᵀX)⁻¹, which has computational complexity around O(d³) where d is the number of features. For large d, this becomes prohibitively expensive, making gradient descent more practical despite requiring iteration."
+  },
+  {
+    "id": "lr_mis_013",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Linear regression can only work with one or two features because the hypothesis function is a line or plane."
+  },
+  {
+    "id": "lr_corr_013",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Linear regression works with any number of features. The hypothesis h(x) = Σᵈᵢ₌₀ θᵢxᵢ is linear in the parameters θ and can handle d-dimensional input spaces. The term 'linear' refers to the relationship being linear in parameters, not to the number of dimensions."
+  },
+  {
+    "id": "lr_mis_014",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The probabilistic interpretation shows that linear regression only works when the errors are actually Gaussian distributed."
+  },
+  {
+    "id": "lr_corr_014",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The Gaussian noise assumption provides one justification for least squares as maximum likelihood estimation, but it is not necessary for linear regression to be useful. Least-squares can be justified under other assumptions and remains a reasonable and effective procedure even when errors are not Gaussian."
+  },
+  {
+    "id": "lr_mis_015",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Underfitting occurs when the model is too complex and memorizes the training data."
+  },
+  {
+    "id": "lr_corr_015",
+    "concept": "Linear Regression",
+    "subconcept": "Underfitting",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Underfitting occurs when the model is too simple to capture the underlying structure in the data. For example, fitting a linear function to data with clear nonlinear patterns results in underfitting. The model fails to represent the complexity present in the data."
+  },
+  {
+    "id": "lr_mis_016",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "A model that perfectly fits all training data points with zero error is always the best model."
+  },
+  {
+    "id": "lr_corr_016",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "A model that passes through every training point exactly may be overfitting. For example, a 5th-order polynomial that perfectly fits housing price data likely captures noise rather than true patterns, and will generalize poorly to new examples. Good models balance fit to training data with generalization ability."
+  },
+  {
+    "id": "lr_mis_017",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Adding more features always improves model performance because it gives the model more information to work with."
+  },
+  {
+    "id": "lr_corr_017",
+    "concept": "Linear Regression",
+    "subconcept": "Overfitting",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "While more features can improve fit on training data, adding too many features risks overfitting. A model with excessive features may fit training data perfectly but fail to generalize. Feature selection is important—models need enough features to capture true patterns but not so many that they fit noise."
+  },
+  {
+    "id": "lr_mis_018",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Locally weighted linear regression is called 'locally weighted' because it assigns different weights to different features based on their importance."
+  },
+  {
+    "id": "lr_corr_018",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Locally weighted linear regression assigns weights to training examples, not features. Training examples close to the query point x receive high weights w⁽ⁱ⁾ ≈ 1, while distant examples receive low weights. The term 'local' refers to giving more importance to nearby training data when making predictions."
+  },
+  {
+    "id": "lr_mis_019",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Parametric algorithms like standard linear regression need to keep the entire training set in memory to make predictions."
+  },
+  {
+    "id": "lr_corr_019",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Parametric algorithms like standard linear regression have a fixed number of parameters θ. Once these are learned from training data, we only need to store the parameter values to make predictions—the training data can be discarded. Non-parametric algorithms like locally weighted linear regression require keeping the entire training set."
+  },
+  {
+    "id": "lr_mis_020",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The choice of features doesn't matter much as long as we have enough training data for the model to learn from."
+  },
+  {
+    "id": "lr_corr_020",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Feature selection is critical to ensuring good performance. Poor feature choices can lead to underfitting if important patterns cannot be captured, or overfitting if too many irrelevant features are included. The notes emphasize that choosing appropriate features is an important design decision in learning problems."
+  },
+  {
+    "id": "lr_mis_021",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The hypothesis function h(x) = θᵀx can only model linear relationships because it's called linear regression."
+  },
+  {
+    "id": "lr_corr_021",
+    "concept": "Linear Regression",
+    "subconcept": "Hypothesis",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Linear regression can model nonlinear relationships through feature engineering. By including polynomial features like x², we can fit curves as shown with y = θ₀ + θ₁x + θ₂x². The 'linear' refers to linearity in the parameters θ, not the features. The model remains linear in θ even with nonlinear feature transformations."
+  },
+  {
+    "id": "lr_mis_022",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Minimizing the sum of absolute errors |h(x⁽ⁱ⁾) - y⁽ⁱ⁾| would give the same result as minimizing the sum of squared errors."
+  },
+  {
+    "id": "lr_corr_022",
+    "concept": "Linear Regression",
+    "subconcept": "Cost Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Squared errors and absolute errors lead to different optimal solutions. The least-squares cost function J(θ) = (1/2)Σ(h(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is specifically chosen and corresponds to maximum likelihood estimation under Gaussian noise assumptions. Absolute errors would give a different optimization problem with different properties."
+  },
+  {
+    "id": "lr_mis_023",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The gradient ∂J(θ)/∂θⱼ tells us the value we should set θⱼ to in order to minimize the cost function."
+  },
+  {
+    "id": "lr_corr_023",
+    "concept": "Linear Regression",
+    "subconcept": "Gradient Descent",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The gradient ∂J(θ)/∂θⱼ indicates the direction and rate of steepest increase of J. In gradient descent, we move in the opposite direction (θⱼ := θⱼ - α·∂J/∂θⱼ) to decrease J. The gradient does not directly give the optimal value; it guides iterative steps toward the minimum."
+  },
+  {
+    "id": "lr_mis_024",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The variance σ² of the Gaussian noise must be known beforehand to perform linear regression using maximum likelihood."
+  },
+  {
+    "id": "lr_corr_024",
+    "concept": "Linear Regression",
+    "subconcept": "General",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The optimal θ obtained from maximizing the likelihood does not depend on the value of σ². Maximizing the log likelihood simplifies to minimizing the sum of squared errors, which is independent of σ². Therefore, we arrive at the same result even if σ² is unknown."
+  },
+  
+  {
+    "id": "logreg_mis_001",
+    "concept": "Logistic Regression",
+    "subconcept": "Classification Setup",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression predicts continuous numerical values in the same way as linear regression."
+  },
+  {
+    "id": "logreg_corr_001",
+    "concept": "Logistic Regression",
+    "subconcept": "Classification Setup",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression is used for classification, where the target variable takes on discrete values, such as 0 or 1 in the binary case."
+  },
+  {
+    "id": "logreg_mis_002",
+    "concept": "Logistic Regression",
+    "subconcept": "Classification Setup",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The labels 0 and 1 in binary classification are arbitrary numbers without meaning."
+  },
+  {
+    "id": "logreg_corr_002",
+    "concept": "Logistic Regression",
+    "subconcept": "Classification Setup",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In binary classification, 0 represents the negative class and 1 represents the positive class."
+  },
+  {
+    "id": "logreg_mis_003",
+    "concept": "Logistic Regression",
+    "subconcept": "Logistic Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression directly uses θᵀx as its prediction."
+  },
+  {
+    "id": "logreg_corr_003",
+    "concept": "Logistic Regression",
+    "subconcept": "Logistic Hypothesis",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In logistic regression, the hypothesis is defined as hθ(x) = g(θᵀx), where g is the sigmoid function."
+  },
+  {
+    "id": "logreg_mis_004",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The sigmoid function can produce values outside the range [0,1]."
+  },
+  {
+    "id": "logreg_corr_004",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The sigmoid function always outputs values strictly between 0 and 1."
+  },
+  {
+    "id": "logreg_mis_005",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The derivative formula g′(z) = g(z)(1 − g(z)) applies to any increasing function."
+  },
+  {
+    "id": "logreg_corr_005",
+    "concept": "Logistic Regression",
+    "subconcept": "Sigmoid Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The identity g′(z) = g(z)(1 − g(z)) is a specific property of the sigmoid function."
+  },
+  {
+    "id": "logreg_mis_006",
+    "concept": "Logistic Regression",
+    "subconcept": "Probabilistic Interpretation",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression does not make probabilistic assumptions about the labels."
+  },
+  {
+    "id": "logreg_corr_006",
+    "concept": "Logistic Regression",
+    "subconcept": "Probabilistic Interpretation",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression models the probability of each class label given the input features."
+  },
+  {
+    "id": "logreg_mis_007",
+    "concept": "Logistic Regression",
+    "subconcept": "Log-Likelihood",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The likelihood expression works even if the training examples are not independent."
+  },
+  {
+    "id": "logreg_corr_007",
+    "concept": "Logistic Regression",
+    "subconcept": "Log-Likelihood",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The likelihood formulation assumes that the training examples are generated independently."
+  },
+  {
+    "id": "logreg_mis_008",
+    "concept": "Logistic Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Training logistic regression means minimizing the log-likelihood."
+  },
+  {
+    "id": "logreg_corr_008",
+    "concept": "Logistic Regression",
+    "subconcept": "Optimization Objective",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression is trained by maximizing the log-likelihood of the data."
+  },
+  {
+    "id": "logreg_mis_009",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression uses gradient descent with the same objective as linear regression."
+  },
+  {
+    "id": "logreg_corr_009",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression uses gradient ascent because the objective is to maximize the log-likelihood."
+  },
+  {
+    "id": "logreg_mis_010",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Because the update rule looks the same, logistic regression and linear regression are the same algorithm."
+  },
+  {
+    "id": "logreg_corr_010",
+    "concept": "Logistic Regression",
+    "subconcept": "Gradient Ascent",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Although the update rules have a similar form, logistic regression uses a nonlinear hypothesis function."
+  },
+  {
+    "id": "logreg_mis_011",
+    "concept": "Logistic Regression",
+    "subconcept": "Logistic Loss",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The logistic loss is unrelated to the likelihood of the model."
+  },
+  {
+    "id": "logreg_corr_011",
+    "concept": "Logistic Regression",
+    "subconcept": "Logistic Loss",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The logistic loss corresponds to the negative log-likelihood of the model."
+  },
+  {
+    "id": "logreg_mis_012",
+    "concept": "Logistic Regression",
+    "subconcept": "Perceptron Algorithm",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Replacing the sigmoid with a threshold function preserves the probabilistic interpretation."
+  },
+  {
+    "id": "logreg_corr_012",
+    "concept": "Logistic Regression",
+    "subconcept": "Perceptron Algorithm",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Using a threshold function yields the perceptron algorithm, which lacks a probabilistic interpretation."
+  },
+  {
+    "id": "logreg_mis_013",
+    "concept": "Logistic Regression",
+    "subconcept": "Multiclass Classification",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In multiclass classification, the raw scores θᵢᵀx can be treated directly as probabilities."
+  },
+  {
+    "id": "logreg_corr_013",
+    "concept": "Logistic Regression",
+    "subconcept": "Multiclass Classification",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The softmax function is used to convert raw scores into valid probabilities that sum to one."
+  },
+  {
+    "id": "logreg_mis_014",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The indicator function in the cross-entropy gradient represents a probability."
+  },
+  {
+    "id": "logreg_corr_014",
+    "concept": "Logistic Regression",
+    "subconcept": "Cross-Entropy Loss",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The indicator function equals 1 when the class label matches and 0 otherwise."
+  },
+  {
+    "id": "logreg_mis_015",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton’s Method",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Newton’s method for logistic regression only uses first-order derivatives."
+  },
+  {
+    "id": "logreg_corr_015",
+    "concept": "Logistic Regression",
+    "subconcept": "Newton’s Method",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Newton’s method uses both the gradient and the Hessian of the objective function."
+  },
+  
+  {
+    "id": "gen_mis_001",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Discriminative vs Generative",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Discriminative models like logistic regression learn p(y|x) by first modeling p(x|y) and p(y), then applying Bayes rule."
+  },
+  {
+    "id": "gen_corr_001",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Discriminative vs Generative",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Discriminative algorithms like logistic regression directly learn p(y|x) by modeling the decision boundary. Generative algorithms model p(x|y) and p(y), then use Bayes rule to derive p(y|x)."
+  },
+  {
+    "id": "gen_mis_002",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Bayes Rule",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In Bayes rule, p(x) in the denominator represents the prior probability of the features."
+  },
+  {
+    "id": "gen_corr_002",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Bayes Rule",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In Bayes rule p(y|x) = p(x|y)p(y)/p(x), the term p(x) is the marginal probability of x, which serves as a normalization constant. The prior probability is p(y), not p(x)."
+  },
+  {
+    "id": "gen_mis_003",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In GDA, each class y=0 and y=1 must have different covariance matrices Σ₀ and Σ₁ to properly model the data."
+  },
+  {
+    "id": "gen_corr_003",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In GDA, both classes share the same covariance matrix Σ. The model assumes p(x|y=0) ~ N(μ₀, Σ) and p(x|y=1) ~ N(μ₁, Σ), where only the means differ between classes."
+  },
+  {
+    "id": "gen_mis_004",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The maximum likelihood estimate for μ₀ in GDA is computed by averaging all training examples, regardless of their labels."
+  },
+  {
+    "id": "gen_corr_004",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The maximum likelihood estimate for μ₀ is the average of only those training examples where y⁽ⁱ⁾=0. Similarly, μ₁ is the average of examples where y⁽ⁱ⁾=1."
+  },
+  {
+    "id": "gen_mis_005",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "GDA and logistic regression always produce identical decision boundaries when applied to the same dataset."
+  },
+  {
+    "id": "gen_corr_005",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "GDA makes stronger modeling assumptions (Gaussian distribution) than logistic regression. When these assumptions are correct, GDA is more efficient and may perform better, but when they are incorrect, logistic regression is more robust."
+  },
+  {
+    "id": "gen_mis_006",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The covariance matrix Σ in a multivariate normal distribution must be diagonal to ensure features are independent."
+  },
+  {
+    "id": "gen_corr_006",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Multivariate Normal Distribution",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The covariance matrix Σ captures correlations between features. When Σ is diagonal, features are uncorrelated, but Σ need not be diagonal in general—it can model dependencies between features."
+  },
+  {
+    "id": "gen_mis_007",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes Assumption",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The Naive Bayes assumption states that all features xᵢ are independent of each other without any conditioning."
+  },
+  {
+    "id": "gen_corr_007",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes Assumption",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The Naive Bayes assumption states that features xᵢ are conditionally independent given the class label y. This means p(x|y) = ∏ p(xᵢ|y), where independence is assumed only after conditioning on y."
+  },
+  {
+    "id": "gen_mis_008",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In text classification with Naive Bayes, the parameter φₖ|y=1 represents the probability that word k appears exactly once in emails that are spam."
+  },
+  {
+    "id": "gen_corr_008",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The parameter φₖ|y=1 = p(xₖ=1|y=1) represents the probability that word k appears at least once in an email given that the email is spam, not the probability of appearing exactly once."
+  },
+  {
+    "id": "gen_mis_009",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Laplace smoothing is only necessary when the training set is very small, and can be safely ignored for large datasets."
+  },
+  {
+    "id": "gen_corr_009",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Laplace smoothing is necessary whenever there's a risk that some feature value never appears with a particular class label in the training data, which would cause p(x|y)=0 and make predictions impossible. This can occur even in moderately large datasets."
+  },
+  {
+    "id": "gen_mis_010",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "With Laplace smoothing, the formula φⱼ = (∑I{zⱼ=1} + 1)/(m + 2) adds 1 to the numerator and 2 to the denominator because there are always exactly 2 possible classes."
+  },
+  {
+    "id": "gen_corr_010",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Laplace Smoothing",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The formula φⱼ = (∑I{zⱼ=1} + 1)/(m + k) adds 1 to the numerator and k to the denominator, where k is the number of possible values the variable can take. For binary variables k=2, but for multinomial variables k could be different."
+  },
+  {
+    "id": "gen_mis_011",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Event Models",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The multi-variate Bernoulli event model and multinomial event model will always produce the same classification results for text data."
+  },
+  {
+    "id": "gen_corr_011",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Event Models",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The multi-variate Bernoulli and multinomial event models make different assumptions and typically produce different results. The Bernoulli model only tracks presence/absence of words, while the multinomial model accounts for word frequency and email length."
+  },
+  {
+    "id": "gen_mis_012",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Event Models",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In the multinomial event model, each email generates exactly n words where n is fixed across all documents."
+  },
+  {
+    "id": "gen_corr_012",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Event Models",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In the multinomial event model, email length n is determined by a Poisson(ξ) distribution, so different emails can have different lengths. The model then generates n words independently according to the multinomial distribution."
+  },
+  {
+    "id": "gen_mis_013",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "To classify a new example using Naive Bayes, we should pick the class y that maximizes p(x|y)."
+  },
+  {
+    "id": "gen_corr_013",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "To classify a new example, we pick the class y that maximizes p(y|x), which by Bayes rule is proportional to p(x|y)p(y). We must account for both the likelihood and the prior probability of each class."
+  },
+  {
+    "id": "gen_mis_014",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Generative models are always superior to discriminative models because they model the full joint distribution p(x,y)."
+  },
+  {
+    "id": "gen_corr_014",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "General",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Generative models make stronger assumptions about the data distribution. When these assumptions hold, they can be more data-efficient, but when assumptions are violated, discriminative models that directly learn p(y|x) are often more robust."
+  },
+  {
+    "id": "gen_mis_015",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The parameter φ in GDA represents the mean of the Gaussian distribution for class y=1."
+  },
+  {
+    "id": "gen_corr_015",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Gaussian Discriminant Analysis",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The parameter φ in GDA represents the prior probability p(y=1), not the mean. The means of the Gaussian distributions are denoted by μ₀ and μ₁ for the two classes."
+  },
+  {
+    "id": "gen_mis_016",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In the multinomial event model for text classification, the likelihood p(x|y) depends on the order in which words appear in the email."
+  },
+  {
+    "id": "gen_corr_016",
+    "concept": "Generative Learning Algorithms",
+    "subconcept": "Naive Bayes",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The multinomial event model treats the email as a bag of words, ignoring word order. The likelihood is p(x|y) = ∏ᵢ p(xᵢ|y), which depends only on which words appear and their frequencies, not their positions."
+  },
+  
+  {
+    "id": "glm_mis_001",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Introduction",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Generalized Linear Models are a completely different type of model unrelated to linear or logistic regression."
+  },
+  {
+    "id": "glm_corr_001",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Introduction",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Linear regression and logistic regression are both special cases of the Generalized Linear Model framework."
+  },
+  {
+    "id": "glm_mis_002",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Any probability distribution can be written in exponential family form."
+  },
+  {
+    "id": "glm_corr_002",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Only distributions that can be written in the form p(y;η) = b(y)exp(ηᵀT(y) − a(η)) belong to the exponential family."
+  },
+  {
+    "id": "glm_mis_003",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Natural Parameter",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The natural parameter η is always equal to the mean of the distribution."
+  },
+  {
+    "id": "glm_corr_003",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Natural Parameter",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The natural parameter η is a parameter of the exponential family distribution and is not always equal to the mean."
+  },
+  {
+    "id": "glm_mis_004",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Sufficient Statistic",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The sufficient statistic T(y) must always be a complex function of y."
+  },
+  {
+    "id": "glm_corr_004",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Sufficient Statistic",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In many examples considered, including Bernoulli and Gaussian distributions, the sufficient statistic is simply T(y) = y."
+  },
+  {
+    "id": "glm_mis_005",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Log Partition Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The log partition function a(η) has no effect on the probability distribution."
+  },
+  {
+    "id": "glm_corr_005",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Log Partition Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The log partition function ensures the distribution is properly normalized so that probabilities sum or integrate to one."
+  },
+  {
+    "id": "glm_mis_006",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Only Bernoulli distributions belong to the exponential family."
+  },
+  {
+    "id": "glm_corr_006",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Exponential Family",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The exponential family includes many distributions such as Bernoulli, Gaussian, multinomial, Poisson, and others."
+  },
+  {
+    "id": "glm_mis_007",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Construction",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Generalized Linear Models are defined without any assumptions about the data-generating process."
+  },
+  {
+    "id": "glm_corr_007",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Construction",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "GLMs are constructed by making specific assumptions about the conditional distribution of y given x."
+  },
+  {
+    "id": "glm_mis_008",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In a GLM, the hypothesis function is chosen arbitrarily."
+  },
+  {
+    "id": "glm_corr_008",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In a GLM, the hypothesis is chosen so that it predicts the expected value of T(y) given x."
+  },
+  {
+    "id": "glm_mis_009",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The relationship between the natural parameter η and x must always be nonlinear."
+  },
+  {
+    "id": "glm_corr_009",
+    "concept": "Generalized Linear Models",
+    "subconcept": "GLM Assumptions",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "In the GLM framework presented, the natural parameter η is assumed to be a linear function of x."
+  },
+  {
+    "id": "glm_mis_010",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Ordinary least squares cannot be derived from the GLM framework."
+  },
+  {
+    "id": "glm_corr_010",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Ordinary least squares arises as a GLM when the conditional distribution of y given x is modeled as Gaussian."
+  },
+  {
+    "id": "glm_mis_011",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "In the Gaussian GLM example, the hypothesis does not depend on the natural parameter."
+  },
+  {
+    "id": "glm_corr_011",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Ordinary Least Squares as GLM",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "For the Gaussian distribution in the GLM framework, the mean equals the natural parameter, which equals θᵀx."
+  },
+  {
+    "id": "glm_mis_012",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "beginner",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression does not fit into the Generalized Linear Model framework."
+  },
+  {
+    "id": "glm_corr_012",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "beginner",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "Logistic regression is a GLM obtained by modeling y|x with a Bernoulli distribution."
+  },
+  {
+    "id": "glm_mis_013",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The logistic function is chosen arbitrarily in logistic regression."
+  },
+  {
+    "id": "glm_corr_013",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Logistic Regression as GLM",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The logistic function arises naturally as the mean of the Bernoulli distribution in the GLM formulation."
+  },
+  {
+    "id": "glm_mis_014",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Canonical Response Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The canonical response function always equals the identity function."
+  },
+  {
+    "id": "glm_corr_014",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Canonical Response Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The canonical response function depends on the distribution; it is the identity for Gaussian and the logistic function for Bernoulli."
+  },
+  {
+    "id": "glm_mis_015",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Canonical Link Function",
+    "difficulty": "intermediate",
+    "content_type": "misconception",
+    "source": "Pedagogical Curation",
+    "text": "The canonical link function maps inputs x directly to predictions."
+  },
+  {
+    "id": "glm_corr_015",
+    "concept": "Generalized Linear Models",
+    "subconcept": "Canonical Link Function",
+    "difficulty": "intermediate",
+    "content_type": "correction",
+    "source": "Pedagogical Curation",
+    "text": "The canonical link function is the inverse of the canonical response function and maps the mean to the natural parameter."
+  }
+
+]
