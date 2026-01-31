@@ -1,0 +1,648 @@
+[
+  {
+    "id": "eval_001",
+    "student_query": "I think the hypothesis function can only predict house prices that are within the range of prices we saw in our training data. Like if our training set has houses from $200k to $500k, we can't predict a $600k house, right?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Hypothesis",
+      "misconceptions": [
+        "lr_mis_001"
+      ],
+      "core_error": "Student believes the hypothesis is constrained to the range of training outputs, not understanding that linear functions can extrapolate beyond observed values.",
+      "expected_answer": {
+        "intuitive": "The hypothesis is a linear function like h(x) = θ₀ + θ₁x₁ + θ₂x₂, which can produce any value on the real number line. Once we learn the parameters θ from training data, the function extends infinitely in both directions. So if the pattern suggests a house should cost $600k based on its features, the hypothesis will predict that, even if we've never seen such expensive houses in training.",
+        "formal": "The hypothesis h(x) = θᵀx represents a linear function mapping from input space X to output space Y = ℝ. The learned parameters θ define a hyperplane that extends throughout the entire feature space without range constraints. Predictions are not bounded by the observed range of y⁽ⁱ⁾ values in the training set."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_002",
+    "student_query": "Why do we set x₀ equal to 1? Does that mean we need to add an extra column to our dataset with all ones before training?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Hypothesis",
+      "misconceptions": [
+        "lr_mis_002"
+      ],
+      "core_error": "Student thinks x₀ = 1 is a real feature that must be collected or added to the dataset, rather than a notational convention.",
+      "expected_answer": {
+        "intuitive": "Setting x₀ = 1 is just a mathematical trick to make our notation cleaner. We're not actually collecting a new feature. It lets us write the intercept term θ₀ as part of the dot product θᵀx instead of writing it separately. Think of it as a notational shorthand, not a real measurement.",
+        "formal": "The convention x₀ = 1 allows the intercept term θ₀ to be incorporated into the vectorized representation h(x) = θᵀx = Σᵢ₌₀ᵈ θᵢxᵢ. This is a notational device for mathematical convenience, enabling compact matrix operations. It does not represent an actual feature from the domain."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_003",
+    "student_query": "I don't understand why we have that 1/2 in front of the cost function. If we remove it, wouldn't the cost function stop working properly?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Cost Function",
+      "misconceptions": [
+        "lr_mis_003"
+      ],
+      "core_error": "Student believes the 1/2 factor is necessary for the cost function to be valid, not recognizing it's purely for mathematical convenience.",
+      "expected_answer": {
+        "intuitive": "The 1/2 is there to make the math cleaner when we compute gradients. When we take the derivative of (h(x) - y)², we get a factor of 2 from the chain rule. The 1/2 cancels with that 2, giving us simpler formulas. The optimization would work exactly the same without it—we'd just have messier equations.",
+        "formal": "The factor 1/2 in J(θ) = ½Σⁿᵢ₌₁(h(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is included for analytical convenience. When computing ∂J/∂θⱼ, the derivative of the squared term produces a factor of 2, which cancels with 1/2. This simplification does not affect the location of the optimum θ* since scaling a cost function by a positive constant preserves its minimizer."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_004",
+    "student_query": "So the cost function J(θ) tells us how far off our prediction is for each individual training example, right? Like we compute it separately for each house?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Cost Function",
+      "misconceptions": [
+        "lr_mis_004"
+      ],
+      "core_error": "Student thinks the cost function evaluates error on individual examples rather than aggregating across the entire training set.",
+      "expected_answer": {
+        "intuitive": "The cost function J(θ) actually combines the errors from all training examples into one number. It sums up the squared differences between predictions and actual values across the entire dataset. So J(θ) gives you a single score for how well your parameters fit all the data, not separate scores for each example.",
+        "formal": "The cost function J(θ) = ½Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is a scalar-valued function that aggregates prediction errors over all n training examples. It maps a parameter vector θ to a single real number quantifying overall fit quality across the entire training set."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_005",
+    "student_query": "When implementing gradient descent, should I update θ₀ first, then use the new θ₀ to update θ₁, then use the new θ₁ to update θ₂? That seems like the logical order.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "lr_mis_005"
+      ],
+      "core_error": "Student wants to update parameters sequentially rather than simultaneously, misunderstanding the synchronous nature of gradient descent.",
+      "expected_answer": {
+        "intuitive": "You need to update all the θ values at the same time, not one after another. First compute all the gradients using your current θ values. Then, once you have all the gradients ready, update all parameters together in one step. If you update them one by one, you're using a mix of old and new values, which breaks the algorithm.",
+        "formal": "The gradient descent update rule θⱼ := θⱼ - α(∂/∂θⱼ)J(θ) must be executed simultaneously for all j ∈ {0, 1, ..., d}. This means computing all partial derivatives ∂J/∂θⱼ using the current parameter vector θ, then updating all components in parallel. Sequential updates violate the algorithm's definition and can lead to incorrect convergence behavior."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_006",
+    "student_query": "To make gradient descent converge faster, I should just set the learning rate α to a really big value like 100, right? Bigger steps mean we get there quicker.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "lr_mis_006"
+      ],
+      "core_error": "Student assumes larger learning rates always accelerate convergence, ignoring the risk of overshooting and divergence.",
+      "expected_answer": {
+        "intuitive": "A learning rate that's too large can actually prevent convergence. If α is too big, your updates overshoot the minimum—you jump past it and might end up farther away. This can cause the algorithm to bounce around or even diverge, with the cost increasing instead of decreasing. You need a balanced α: small enough for stability but large enough to make reasonable progress.",
+        "formal": "The learning rate α must satisfy stability conditions for convergence. If α is too large, the update θⱼ := θⱼ - α(∂/∂θⱼ)J(θ) can overshoot the minimum of J(θ), potentially causing oscillation or divergence. The optimal α balances convergence speed against stability, with smaller values being safer but slower, and larger values risking instability."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_007",
+    "student_query": "In the LMS update rule, when my prediction is too high (h(x) > y), the error term (y - h(x)) is negative, so we add a negative value to θ. But shouldn't we increase θ when the prediction is too high?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "lr_mis_007"
+      ],
+      "core_error": "Student incorrectly expects θⱼ to increase when predictions are too high, not recognizing that the update direction depends on both the error and the feature value xⱼ.",
+      "expected_answer": {
+        "intuitive": "When h(x) > y and the prediction is too high, we actually want to decrease θⱼ (assuming xⱼ is positive) to bring the prediction down. The update θⱼ := θⱼ + α(y - h(x))xⱼ does exactly this: (y - h(x)) is negative, making the whole term negative, which decreases θⱼ. This pushes predictions in the right direction to reduce the error.",
+        "formal": "The LMS update rule θⱼ := θⱼ + α(y⁽ⁱ⁾ - hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾ decreases θⱼ when hθ(x⁽ⁱ⁾) > y⁽ⁱ⁾ and xⱼ⁽ⁱ⁾ > 0, since the error term (y⁽ⁱ⁾ - hθ(x⁽ⁱ⁾)) becomes negative. This adjustment moves parameters in the direction that reduces prediction error, following the negative gradient of the cost function."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_008",
+    "student_query": "Batch gradient descent and stochastic gradient descent should converge to exactly the same θ values at the end, right? They're both minimizing the same cost function.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "lr_mis_008"
+      ],
+      "core_error": "Student expects both methods to converge to identical parameter values, not understanding that SGD oscillates around the minimum.",
+      "expected_answer": {
+        "intuitive": "Batch gradient descent will settle at the global minimum. But stochastic gradient descent keeps bouncing around that minimum because it updates after each example rather than averaging over all examples. SGD gets close to the optimal values but doesn't converge to a fixed point—it oscillates. Both find good solutions, but SGD is often faster on large datasets even though it's less precise.",
+        "formal": "For linear regression, batch gradient descent converges to the global minimum θ* of the convex cost function J(θ). Stochastic gradient descent, which updates after each training example, oscillates near θ* without converging to a fixed point. While both methods yield good approximations, their convergence behaviors differ fundamentally, with SGD preferred for large datasets due to faster initial progress despite its stochastic oscillations."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_009",
+    "student_query": "I think stochastic gradient descent looks at all the training examples before updating, just like batch gradient descent. The difference is just that it uses a different update formula.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "lr_mis_009"
+      ],
+      "core_error": "Student confuses when updates occur in SGD, thinking it processes all examples before updating like batch GD.",
+      "expected_answer": {
+        "intuitive": "Stochastic gradient descent updates the parameters after each individual training example, not after seeing all of them. So it looks at one example, updates θ, then moves to the next example and updates again. Batch gradient descent waits to see all examples, computes the sum of all gradients, and only then makes one update. This per-example updating is what makes SGD faster to start improving.",
+        "formal": "Stochastic gradient descent performs the update θⱼ := θⱼ + α(y⁽ⁱ⁾ - hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾ after processing each individual training example. In contrast, batch gradient descent accumulates gradients across all n examples, computing θⱼ := θⱼ + αΣⁿᵢ₌₁(y⁽ⁱ⁾ - hθ(x⁽ⁱ⁾))xⱼ⁽ⁱ⁾, and performs a single update per iteration over the entire dataset."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_010",
+    "student_query": "I'm worried that gradient descent might get stuck in a local minimum for linear regression, depending on where we initialize θ. Should I try multiple random initializations?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Optimization Objective",
+      "misconceptions": [
+        "lr_mis_010"
+      ],
+      "core_error": "Student thinks the linear regression cost function has local minima and that initialization matters for convergence.",
+      "expected_answer": {
+        "intuitive": "The cost function for linear regression is bowl-shaped with just one minimum at the bottom. There are no local minima to get stuck in. No matter where you start, gradient descent will roll down to the same global minimum as long as your learning rate isn't too large. So initialization doesn't matter for linear regression—you'll always end up at the same best solution.",
+        "formal": "The linear regression cost function J(θ) = ½Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is a convex quadratic function possessing a unique global minimum and no local minima. Consequently, gradient descent converges to the same optimal θ* regardless of initialization, provided the learning rate α is appropriately chosen."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_011",
+    "student_query": "The normal equation and gradient descent will give me different optimal parameters for the same problem, right? They're solving it in different ways.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Normal Equation",
+      "misconceptions": [
+        "lr_mis_011"
+      ],
+      "core_error": "Student believes different optimization methods produce different optimal parameters rather than the same global optimum.",
+      "expected_answer": {
+        "intuitive": "Both methods are trying to minimize the exact same cost function, and since there's only one global minimum, they both find the same optimal θ*. The normal equation jumps straight to the answer using matrix algebra, while gradient descent takes steps to get there iteratively. Different paths, same destination.",
+        "formal": "The normal equation θ* = (XᵀX)⁻¹Xᵀy and batch gradient descent both minimize the same convex cost function J(θ). Since J(θ) has a unique global minimum for linear regression, both methods converge to the identical optimal parameter vector θ*, though they employ different computational approaches."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_012",
+    "student_query": "For the normal equation, we need to compute the inverse of XᵀX. But what if that matrix is not invertible? Can we still use the normal equation?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Normal Equation",
+      "misconceptions": [
+        "lr_mis_012"
+      ],
+      "core_error": "Student correctly identifies a potential issue but may not understand when XᵀX is singular or how to handle it.",
+      "expected_answer": {
+        "intuitive": "You're right to worry about this. XᵀX might not be invertible if you have redundant features (like if one feature is just 2 times another) or if you have more features than training examples. In these cases, you can use the pseudoinverse instead of the regular inverse, which gives you a solution even when XᵀX is singular.",
+        "formal": "When XᵀX is singular (non-invertible), the normal equation θ = (XᵀX)⁻¹Xᵀy cannot be directly computed. This occurs when features are linearly dependent or when n < d+1. In such cases, the Moore-Penrose pseudoinverse (XᵀX)⁺ can be employed, yielding θ = (XᵀX)⁺Xᵀy, which provides a minimum-norm solution."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_013",
+    "student_query": "Since we square the errors in the cost function, it doesn't matter if we underpredict or overpredict—both types of errors are treated the same way, right?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Cost Function",
+      "misconceptions": [
+        "lr_mis_013"
+      ],
+      "core_error": "Student correctly understands that squaring makes positive and negative errors equivalent but may not grasp implications or alternatives.",
+      "expected_answer": {
+        "intuitive": "Yes, squaring the errors means that an error of +10 and an error of -10 contribute equally to the cost. The cost function treats underpredictions and overpredictions symmetrically. This is a property of least squares—it penalizes errors based on their magnitude, not their direction.",
+        "formal": "The least squares cost function J(θ) = ½Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)² is symmetric with respect to the sign of residuals. For any error ε, we have ε² = (-ε)², meaning errors of equal magnitude but opposite sign contribute identically to the total cost, regardless of whether they represent over- or under-predictions."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_014",
+    "student_query": "In probabilistic interpretation, we assume errors follow a Gaussian distribution. Does this mean our predictions will also be Gaussian distributed?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Probabilistic Interpretation",
+      "misconceptions": [
+        "lr_mis_014"
+      ],
+      "core_error": "Student confuses the distribution of errors (residuals) with the distribution of predictions or target values.",
+      "expected_answer": {
+        "intuitive": "We assume the errors (the difference between true y and predicted y) are Gaussian, not the predictions themselves. The prediction is just θᵀx, which is deterministic given x and θ. It's the noise around this prediction that we model as Gaussian. So y = θᵀx + ε, where ε ~ N(0, σ²).",
+        "formal": "In the probabilistic formulation, we model y⁽ⁱ⁾ = θᵀx⁽ⁱ⁾ + ε⁽ⁱ⁾ where ε⁽ⁱ⁾ ~ N(0, σ²) are the i.i.d. error terms. The prediction hθ(x⁽ⁱ⁾) = θᵀx⁽ⁱ⁾ is deterministic. The conditional distribution p(y⁽ⁱ⁾|x⁽ⁱ⁾;θ) is Gaussian, but this describes uncertainty in y given x, not in the prediction itself."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_015",
+    "student_query": "When we use maximum likelihood estimation for linear regression, we're trying to find parameters that make our training data have the highest probability. This is completely different from minimizing the cost function, right?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Probabilistic Interpretation",
+      "misconceptions": [
+        "lr_mis_015"
+      ],
+      "core_error": "Student doesn't recognize that MLE and least squares are equivalent for linear regression under Gaussian noise assumptions.",
+      "expected_answer": {
+        "intuitive": "Surprisingly, maximizing the likelihood and minimizing the least squares cost function are actually the same thing for linear regression with Gaussian errors. When you work through the math, maximizing the log likelihood leads to exactly the same solution as minimizing the sum of squared errors. They're two different ways of looking at the same optimization problem.",
+        "formal": "Under the assumption that errors are i.i.d. Gaussian ε⁽ⁱ⁾ ~ N(0, σ²), maximizing the log-likelihood ℓ(θ) = log∏ⁿᵢ₌₁ p(y⁽ⁱ⁾|x⁽ⁱ⁾;θ) is equivalent to minimizing J(θ) = ½Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)². Specifically, maximizing ℓ(θ) = -n/2 log(2πσ²) - 1/(2σ²)Σⁿᵢ₌₁(y⁽ⁱ⁾ - θᵀx⁽ⁱ⁾)² is equivalent to minimizing the squared error sum."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_016",
+    "student_query": "I read that we should always normalize features before using gradient descent. But for the normal equation, we don't need to normalize. Why is that?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Feature Scaling",
+      "misconceptions": [
+        "lr_mis_016"
+      ],
+      "core_error": "Student may not understand why feature scaling affects gradient descent convergence but not the normal equation solution.",
+      "expected_answer": {
+        "intuitive": "Feature scaling helps gradient descent because when features are on very different scales, the cost function becomes elongated and narrow, making gradient descent take small, slow steps. The normal equation computes the answer directly in one step using matrix operations, so the shape of the cost function doesn't matter—it finds the minimum regardless of feature scales.",
+        "formal": "Feature scaling accelerates gradient descent convergence by conditioning the Hessian of J(θ), making the level sets more spherical rather than elongated. The normal equation θ = (XᵀX)⁻¹Xᵀy solves the system XᵀXθ = Xᵀy algebraically in closed form, bypassing iterative optimization. The solution is invariant to feature scaling since scaling affects both XᵀX and Xᵀy proportionally."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_017",
+    "student_query": "In locally weighted regression, we give higher weights to nearby training examples. Does this mean we're modifying the training data itself?",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Locally Weighted Regression",
+      "misconceptions": [
+        "lr_mis_017"
+      ],
+      "core_error": "Student thinks LWR modifies the training data rather than adjusting the importance of examples in the cost function.",
+      "expected_answer": {
+        "intuitive": "We're not changing the training data at all. Instead, we're changing how much each example matters when making a prediction at a query point. Examples closer to the query point get more weight in the cost function, so they influence the local fit more. The original training data stays the same; we just emphasize different examples for different predictions.",
+        "formal": "Locally weighted regression modifies the cost function to J(θ) = ½Σⁿᵢ₌₁ w⁽ⁱ⁾(θᵀx⁽ⁱ⁾ - y⁽ⁱ⁾)², where weights w⁽ⁱ⁾ = exp(-(x⁽ⁱ⁾ - x)²/(2τ²)) are computed based on distance from the query point x. The training set {(x⁽ⁱ⁾, y⁽ⁱ⁾)} remains unmodified; only the relative contribution of each example to the objective varies per query."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_018",
+    "student_query": "Locally weighted regression is a parametric algorithm, just like ordinary linear regression, right? They both use parameters θ.",
+    "expected": {
+      "concept": "Linear Regression",
+      "subconcept": "Locally Weighted Regression",
+      "misconceptions": [
+        "lr_mis_018"
+      ],
+      "core_error": "Student classifies LWR as parametric because it uses parameters, missing that it must retain the training set for predictions.",
+      "expected_answer": {
+        "intuitive": "LWR is actually non-parametric. Even though it uses parameters θ, it doesn't keep a fixed set of parameters. Instead, it recomputes θ from scratch for every single prediction, using the training data each time. Parametric algorithms learn fixed parameters once and throw away the training data. LWR keeps the training data forever.",
+        "formal": "Locally weighted regression is a non-parametric algorithm. While it computes parameters θ for each prediction, these parameters are query-dependent and not stored. Unlike parametric models that learn a fixed θ once during training, LWR must retain the entire training set {(x⁽ⁱ⁾, y⁽ⁱ⁾)} and refit θ for each query point x, with computational cost scaling with the training set size."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_019",
+    "student_query": "For logistic regression, why do we use 1/(1 + e^(-θᵀx)) instead of just θᵀx? Can't we just threshold θᵀx at 0.5 to classify?",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Hypothesis",
+      "misconceptions": [
+        "logistic_mis_001"
+      ],
+      "core_error": "Student doesn't understand why we need the sigmoid function and thinks direct thresholding of θᵀx would work.",
+      "expected_answer": {
+        "intuitive": "The output θᵀx can be any real number, like -100 or +100. We need a function that squashes these values into the range [0, 1] to represent probabilities. The logistic function 1/(1 + e^(-θᵀx)) does exactly this—it maps any real number to a probability between 0 and 1, which we can then interpret as p(y=1|x).",
+        "formal": "In logistic regression, we model p(y=1|x;θ) as a probability in [0,1]. The linear combination θᵀx ∈ ℝ is unbounded. The logistic function g(z) = 1/(1+e^(-z)) serves as a link function mapping ℝ → (0,1), ensuring hθ(x) = g(θᵀx) represents a valid probability. This formulation arises naturally from modeling y|x as Bernoulli(φ) in the GLM framework."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_020",
+    "student_query": "I think the decision boundary in logistic regression is where h(x) = 0. That's where we switch from predicting class 0 to class 1.",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Decision Boundary",
+      "misconceptions": [
+        "logistic_mis_002"
+      ],
+      "core_error": "Student confuses the decision boundary with h(x) = 0 instead of h(x) = 0.5 or equivalently θᵀx = 0.",
+      "expected_answer": {
+        "intuitive": "The decision boundary is actually where h(x) = 0.5, which happens when θᵀx = 0. When θᵀx is positive, h(x) is greater than 0.5 and we predict class 1. When θᵀx is negative, h(x) is less than 0.5 and we predict class 0. The logistic function equals 0.5 exactly at the point where its input is 0.",
+        "formal": "The decision boundary is the set of points x where hθ(x) = 0.5. Since hθ(x) = 1/(1 + e^(-θᵀx)), we have hθ(x) = 0.5 if and only if θᵀx = 0. Thus the decision boundary is characterized by the hyperplane {x : θᵀx = 0}. Points with θᵀx > 0 yield hθ(x) > 0.5 (class 1), while θᵀx < 0 yields hθ(x) < 0.5 (class 0)."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_021",
+    "student_query": "Can we use the same cost function for logistic regression that we use for linear regression? Just minimize the squared error between h(x) and y?",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Cost Function",
+      "misconceptions": [
+        "logistic_mis_003"
+      ],
+      "core_error": "Student wants to use least squares cost for logistic regression, not understanding it becomes non-convex.",
+      "expected_answer": {
+        "intuitive": "If we used squared error with the logistic function, we'd get a cost function with many local minima—it wouldn't be bowl-shaped anymore. Gradient descent could get stuck in these local minima and not find the best solution. That's why we use a different cost function (log loss) that keeps the problem convex and ensures we can always find the global optimum.",
+        "formal": "Using J(θ) = ½Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)² with hθ(x) = 1/(1+e^(-θᵀx)) yields a non-convex optimization problem with multiple local minima. This makes gradient descent unreliable. Instead, logistic regression uses J(θ) = -Σⁿᵢ₌₁[y⁽ⁱ⁾log(hθ(x⁽ⁱ⁾)) + (1-y⁽ⁱ⁾)log(1-hθ(x⁽ⁱ⁾))], which is convex and guarantees convergence to the global minimum."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_022",
+    "student_query": "In the logistic regression cost function, why do we have two different terms depending on whether y=1 or y=0? Why can't we use just one formula?",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Cost Function",
+      "misconceptions": [
+        "logistic_mis_004"
+      ],
+      "core_error": "Student doesn't understand the structure of the log loss and why it has separate terms for the two classes.",
+      "expected_answer": {
+        "intuitive": "We want to penalize wrong predictions: if the true label is y=1 but we predict h(x) close to 0, that should cost a lot. Similarly if y=0 but we predict close to 1. The term -log(h(x)) handles the y=1 case, and -log(1-h(x)) handles y=0. When y=1, only the first term matters; when y=0, only the second matters. We can actually write this as one formula: -[y log(h(x)) + (1-y)log(1-h(x))].",
+        "formal": "The logistic regression cost for a single example is defined piecewise: Cost(hθ(x), y) = -log(hθ(x)) if y=1, and -log(1-hθ(x)) if y=0. This can be expressed compactly as Cost(hθ(x), y) = -y log(hθ(x)) - (1-y)log(1-hθ(x)). This formulation arises from the negative log-likelihood of the Bernoulli distribution and ensures convexity of the overall cost function J(θ)."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_023",
+    "student_query": "The gradient for logistic regression looks the same as for linear regression: (h(x) - y)x. Does this mean the two algorithms are basically identical?",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Gradient Descent",
+      "misconceptions": [
+        "logistic_mis_005"
+      ],
+      "core_error": "Student observes the gradient has the same form but doesn't recognize that h(x) is defined differently in each algorithm.",
+      "expected_answer": {
+        "intuitive": "The gradient formula looks the same, but h(x) is defined very differently. In linear regression, h(x) = θᵀx is just a linear function. In logistic regression, h(x) = 1/(1 + e^(-θᵀx)) is the sigmoid function. So even though the gradient has the same structure, the actual values you compute are completely different because h(x) is different.",
+        "formal": "While the gradient ∂J/∂θⱼ = Σⁿᵢ₌₁(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾)xⱼ⁽ⁱ⁾ has the same algebraic form for both algorithms, the hypothesis functions differ fundamentally. For linear regression, hθ(x) = θᵀx, while for logistic regression, hθ(x) = g(θᵀx) where g(z) = 1/(1+e^(-z)). This difference in hθ makes the algorithms distinct despite the structural similarity in their gradients."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_024",
+    "student_query": "For multiclass classification with 4 classes, I need to train 4 separate binary classifiers with one-vs-all. But how do I combine their outputs? Do I just average them?",
+    "expected": {
+      "concept": "Logistic Regression",
+      "subconcept": "Multiclass Classification",
+      "misconceptions": [
+        "logistic_mis_006"
+      ],
+      "core_error": "Student doesn't understand that in one-vs-all, we predict the class with the highest probability, not average probabilities.",
+      "expected_answer": {
+        "intuitive": "Each of your 4 classifiers outputs a probability: h₁(x), h₂(x), h₃(x), h₄(x). To make a prediction, you pick the class whose classifier gave the highest probability. So if h₃(x) is the largest, you predict class 3. You're choosing the most confident classifier, not averaging.",
+        "formal": "In one-vs-all classification with K classes, we train K binary classifiers hᵢ(x) = p(y=i|x;θᵢ) for i ∈ {1,...,K}. For a new input x, the prediction is ŷ = argmaxᵢ hᵢ(x), selecting the class whose classifier outputs the maximum probability. This is not an average but a maximum operation over the K classifiers."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_025",
+    "student_query": "The exponential family formula has this b(y) term. Does b(y) control the mean of the distribution?",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Exponential Family",
+      "misconceptions": [
+        "glm_mis_001"
+      ],
+      "core_error": "Student confuses the role of b(y) with other components, not understanding it's a normalization term independent of the natural parameter.",
+      "expected_answer": {
+        "intuitive": "The term b(y) doesn't control the mean. It's basically a normalization factor that depends only on y, not on the parameter η. The natural parameter η is what controls the distribution's properties like the mean. The function b(y) ensures everything integrates to 1, but it doesn't determine the mean or other moments.",
+        "formal": "In the exponential family form p(y;η) = b(y)exp(ηᵀT(y) - a(η)), the term b(y) is the base measure, which depends only on y and not on the natural parameter η. It serves as part of the normalization. The mean E[T(y)] is determined by the derivative of the log partition function a(η), specifically E[T(y)] = ∇a(η), not by b(y)."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_026",
+    "student_query": "I think T(y) in the exponential family must always equal y. That's what I see in all the examples.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Sufficient Statistic",
+      "misconceptions": [
+        "glm_mis_002"
+      ],
+      "core_error": "Student overgeneralizes from common cases where T(y) = y, not recognizing that T(y) can be a more complex function.",
+      "expected_answer": {
+        "intuitive": "In many examples like Bernoulli and Gaussian, T(y) does equal y, which is why you see it so often. But T(y) can be more complex—it's called the sufficient statistic and can be any function of y. For example, in some distributions, T(y) might be [y, y²] containing multiple components. The identity case T(y) = y is common but not required.",
+        "formal": "The sufficient statistic T(y) is a function mapping the sample space to ℝᵏ for some k. While T(y) = y is a common choice in many exponential family distributions (termed the canonical form), it is not mandatory. T(y) can be a vector-valued function of y, such as T(y) = [y, y²]ᵀ, depending on the distribution's parameterization."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_027",
+    "student_query": "What does the natural parameter η actually do? It seems like just another name for the distribution's parameter.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Natural Parameter",
+      "misconceptions": [
+        "glm_mis_003"
+      ],
+      "core_error": "Student sees η as arbitrary naming rather than understanding it's the specific parameterization that makes the distribution exponential family.",
+      "expected_answer": {
+        "intuitive": "The natural parameter η is a special way of writing the distribution's parameter that makes it fit the exponential family form. For different distributions, η might be different from the usual parameter you know. For Bernoulli, η = log(φ/(1-φ)), not φ itself. This reparameterization lets us express many different distributions in a unified framework.",
+        "formal": "The natural parameter η is the parameterization that appears in the exponential family canonical form p(y;η) = b(y)exp(ηᵀT(y) - a(η)). It may differ from conventional parameterizations. For instance, the Bernoulli distribution with parameter φ has natural parameter η = log(φ/(1-φ)). This canonical parameterization enables the unified GLM framework across diverse probability distributions."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_028",
+    "student_query": "Does the partition function a(η) affect the probability distribution in any way? Or is it just there for mathematical completeness?",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Log Partition Function",
+      "misconceptions": [
+        "glm_mis_005"
+      ],
+      "core_error": "Student thinks a(η) has no functional impact on the distribution, missing its normalization role.",
+      "expected_answer": {
+        "intuitive": "The partition function a(η) is crucial—it ensures the probabilities add up to 1. Without the right a(η), the distribution wouldn't be properly normalized. It's not just decorative; it's what makes the exponential family formula mathematically valid as a probability distribution.",
+        "formal": "The log partition function a(η) ensures normalization: ∫ b(y)exp(ηᵀT(y) - a(η))dy = 1. Specifically, a(η) = log(∫ b(y)exp(ηᵀT(y))dy). Without correct specification of a(η), the distribution would not integrate/sum to one and would fail to be a valid probability measure."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_029",
+    "student_query": "I thought only the Bernoulli distribution belongs to the exponential family. Are there others?",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Exponential Family",
+      "misconceptions": [
+        "glm_mis_006"
+      ],
+      "core_error": "Student has limited knowledge of exponential family members, thinking it only includes Bernoulli.",
+      "expected_answer": {
+        "intuitive": "The exponential family is actually very large! It includes Bernoulli, Gaussian (normal), Poisson, multinomial, exponential, gamma, beta, and many others. That's what makes it so useful—lots of common distributions can be expressed in this unified framework, which lets us build general modeling techniques like GLMs.",
+        "formal": "The exponential family encompasses numerous distributions including Bernoulli, Gaussian, Poisson, multinomial, exponential, gamma, beta, and Dirichlet distributions, among others. This broad membership enables the GLM framework to provide a unified approach to modeling diverse types of response variables across classification, regression, and count data problems."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_030",
+    "student_query": "Since GLMs are 'generalized', I assume we can build them without making any assumptions about the data or distribution, right?",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "GLM Construction",
+      "misconceptions": [
+        "glm_mis_007"
+      ],
+      "core_error": "Student misinterprets 'generalized' to mean assumption-free, not understanding GLMs require specific distributional assumptions.",
+      "expected_answer": {
+        "intuitive": "Actually, GLMs require clear assumptions. The 'generalized' part means we can handle different types of response variables (not just continuous ones), but we still assume y|x follows some exponential family distribution. We also assume the natural parameter η relates linearly to x. These assumptions are essential for constructing a GLM.",
+        "formal": "GLMs are constructed under three specific assumptions: (1) y|x;θ follows an exponential family distribution with parameter η, (2) the hypothesis h(x) predicts E[T(y)|x], typically with T(y) = y, and (3) the natural parameter relates linearly to inputs: η = θᵀx. The term 'generalized' refers to extending linear regression to non-Gaussian response distributions, not to eliminating assumptions."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_031",
+    "student_query": "In a GLM, we can choose any hypothesis function we want for h(x), right? It's up to us to pick something that works well.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "GLM Assumptions",
+      "misconceptions": [
+        "glm_mis_008"
+      ],
+      "core_error": "Student thinks the hypothesis is chosen arbitrarily rather than being determined by the GLM assumptions.",
+      "expected_answer": {
+        "intuitive": "The hypothesis isn't arbitrary in a GLM. We specifically choose h(x) = E[T(y)|x], which means it should output the expected value of T(y) given x. This expectation is determined by the distribution we choose for y|x. Once we pick the distribution and set η = θᵀx, the form of h(x) follows from the GLM framework—we don't just pick it freely.",
+        "formal": "GLM Assumption 2 specifies that h(x) = E[T(y)|x;θ]. Given the choice of exponential family distribution and the linear relationship η = θᵀx (Assumption 3), the hypothesis function is determined by h(x) = E[T(y);η] = (∇a)(θᵀx), where a(η) is the log partition function. The hypothesis is thus derived from the distributional assumptions, not chosen arbitrarily."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_032",
+    "student_query": "In GLMs, the natural parameter η must be a nonlinear function of x to handle complex patterns in the data.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "GLM Assumptions",
+      "misconceptions": [
+        "glm_mis_009"
+      ],
+      "core_error": "Student believes η and x must be related nonlinearly, contradicting the linear relationship assumption in GLMs.",
+      "expected_answer": {
+        "intuitive": "Actually, one of the key assumptions in the GLM framework we're studying is that η and x are related linearly: η = θᵀx. This linear relationship is what makes GLMs tractable and gives them nice properties. The nonlinearity in the model comes from the link function connecting η to the mean, not from how η depends on x.",
+        "formal": "GLM Assumption 3 states that the natural parameter η and the inputs x are related linearly: η = θᵀx (or ηᵢ = θᵢᵀx for vector-valued η). This is a design choice that ensures analytical tractability. Nonlinearity enters the model through the response function g(η) = E[T(y);η], not through the relationship between η and x."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_033",
+    "student_query": "Ordinary least squares is just linear regression. It can't be derived from GLMs because GLMs are for classification problems.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Ordinary Least Squares as GLM",
+      "misconceptions": [
+        "glm_mis_010"
+      ],
+      "core_error": "Student incorrectly believes GLMs only apply to classification and cannot encompass regression like OLS.",
+      "expected_answer": {
+        "intuitive": "Ordinary least squares is actually a special case of GLMs! When you model y|x as Gaussian (normal distribution) and apply the GLM framework, you get exactly ordinary least squares regression. GLMs aren't just for classification—they handle both regression (like OLS with Gaussian y) and classification (like logistic regression with Bernoulli y).",
+        "formal": "Ordinary least squares arises as a GLM when we model y|x;θ ~ N(μ, σ²). In the Gaussian exponential family formulation, the natural parameter is η = μ. Applying the GLM assumptions yields h(x) = E[y|x] = μ = η = θᵀx, recovering the linear regression hypothesis. This demonstrates that OLS is a special case of the GLM framework."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_034",
+    "student_query": "In the Gaussian GLM derivation for ordinary least squares, the hypothesis h(x) doesn't involve the natural parameter η at all. They're separate things.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Ordinary Least Squares as GLM",
+      "misconceptions": [
+        "glm_mis_011"
+      ],
+      "core_error": "Student doesn't see the connection between h(x), η, and θᵀx in the Gaussian GLM case.",
+      "expected_answer": {
+        "intuitive": "For the Gaussian distribution, the mean μ equals the natural parameter η, and we set η = θᵀx by the GLM assumptions. So h(x) = E[y|x] = μ = η = θᵀx. Everything is connected: the hypothesis equals the mean, which equals the natural parameter, which equals θᵀx. That's how we get h(x) = θᵀx for linear regression.",
+        "formal": "In the Gaussian GLM: h(x) = E[y|x;θ] (by Assumption 2) = μ (since y|x ~ N(μ,σ²)) = η (from the exponential family formulation of the Gaussian) = θᵀx (by Assumption 3). This chain of equalities shows that the hypothesis, natural parameter, and linear predictor are all equal in the Gaussian case, yielding hθ(x) = θᵀx."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_035",
+    "student_query": "Logistic regression can't be a GLM because it uses the logistic function, which is completely different from the linear models in the GLM framework.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Logistic Regression as GLM",
+      "misconceptions": [
+        "glm_mis_012"
+      ],
+      "core_error": "Student doesn't understand that logistic regression is derived from GLM framework using Bernoulli distribution.",
+      "expected_answer": {
+        "intuitive": "Logistic regression is actually a perfect example of a GLM! When you model y|x as Bernoulli (for binary outcomes) and apply the GLM framework, the logistic function emerges naturally. It's not added arbitrarily—it comes from the mathematical structure of the Bernoulli distribution when expressed in exponential family form.",
+        "formal": "Logistic regression is obtained by applying the GLM framework with y|x;θ ~ Bernoulli(φ). In the exponential family formulation, φ = 1/(1+e^(-η)). Following the GLM assumptions: hθ(x) = E[y|x;θ] = φ = 1/(1+e^(-η)) = 1/(1+e^(-θᵀx)). Thus the logistic function arises naturally as a consequence of the GLM construction with Bernoulli responses."
+      }
+    },
+    "difficulty": "beginner"
+  },
+  {
+    "id": "eval_036",
+    "student_query": "The logistic function used in logistic regression is just chosen because it looks like an S-curve and is convenient. There's no deeper reason for using it, right?",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Logistic Regression as GLM",
+      "misconceptions": [
+        "glm_mis_013"
+      ],
+      "core_error": "Student thinks the logistic function is arbitrary rather than derived from the Bernoulli distribution's structure.",
+      "expected_answer": {
+        "intuitive": "The logistic function isn't arbitrary! It comes naturally from assuming y|x follows a Bernoulli distribution and then applying the GLM framework. When you work through the math, the function 1/(1+e^(-z)) appears as the canonical response function for the Bernoulli distribution. It's not just convenient—it's the mathematically correct link between the linear predictor θᵀx and the probability.",
+        "formal": "In the GLM framework with y|x ~ Bernoulli(φ), the relationship between the natural parameter η and the mean φ is φ = 1/(1+e^(-η)). This is the canonical response function for the Bernoulli exponential family. Setting η = θᵀx (Assumption 3) yields hθ(x) = E[y|x] = φ = 1/(1+e^(-θᵀx)), deriving the logistic function from first principles rather than choosing it arbitrarily."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_037",
+    "student_query": "The canonical response function is always the identity function g(η) = η, right? That's why it's called 'canonical.'",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Canonical Response Function",
+      "misconceptions": [
+        "glm_mis_014"
+      ],
+      "core_error": "Student thinks canonical response function is always identity, not recognizing it's distribution-dependent.",
+      "expected_answer": {
+        "intuitive": "The canonical response function changes depending on which distribution you're using. For the Gaussian distribution, it happens to be the identity function g(η) = η. But for the Bernoulli distribution, it's the logistic function g(η) = 1/(1+e^(-η)). Different distributions have different canonical response functions.",
+        "formal": "The canonical response function g(η) = E[T(y);η] is distribution-dependent. For the Gaussian family, g(η) = η (identity). For the Bernoulli family, g(η) = 1/(1+e^(-η)) (logistic function). The term 'canonical' refers to using the natural parameterization of the exponential family, not to a universal functional form."
+      }
+    },
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval_038",
+    "student_query": "The canonical link function maps the input features x directly to the predicted output. That's how we make predictions in a GLM.",
+    "expected": {
+      "concept": "Generalized Linear Models",
+      "subconcept": "Canonical Link Function",
+      "misconceptions": [
+        "glm_mis_015"
+      ],
+      "core_error": "Student confuses the link function's role, thinking it maps inputs to outputs rather than mean to natural parameter.",
+      "expected_answer": {
+        "intuitive": "The canonical link function doesn't map inputs to outputs. Instead, it's the inverse of the response function—it maps from the mean of the distribution to the natural parameter. So if g is the response function giving mean from η, then g⁻¹ is the link function giving η from the mean. For Gaussian, g⁻¹(μ) = μ. For Bernoulli, g⁻¹(φ) = log(φ/(1-φ)).",
+        "formal": "The canonical link function g⁻¹ is the inverse of the canonical response function g. It maps the expected value E[T(y)] to the natural parameter: η = g⁻¹(E[T(y)]). It does not map inputs x to predictions y. For example, in the Bernoulli case, g⁻¹(φ) = log(φ/(1-φ)) maps the probability to the log-odds (natural parameter), not x to y."
+      }
+    },
+    "difficulty": "intermediate"
+  }
+]
